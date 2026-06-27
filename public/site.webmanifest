@@ -1,0 +1,22 @@
+{
+  "name": "Хаски Лэнд — Парк Сказка",
+  "short_name": "Хаски Лэнд",
+  "description": "Каталог северных собак Хаски Лэнд в Парке Сказка: познакомьтесь с хаски, маламутами, самоедами и лайками до визита и купите билет.",
+  "lang": "ru",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "categories": ["entertainment", "lifestyle", "travel"],
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Поиск собак", "short_name": "Поиск", "url": "/search?utm_source=pwa" },
+    { "name": "Разделы", "short_name": "Разделы", "url": "/sections?utm_source=pwa" }
+  ]
+}

@@ -1,26 +1,362 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ===================================================================
+   ХАСКИ ЛЭНД — ДИЗАЙН-СИСТЕМА (с нуля)
+   Арктическая сказка: снег · северное сияние · ледяная лазурь.
+   Тёплый янтарь — только под конверсию (билет).
+   Адаптив встроен во fluid-шкалу (clamp) → минимум медиазапросов.
+   =================================================================== */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------- ТОКЕНЫ: СВЕТЛАЯ (по умолчанию) ---------------------- */
+:root {
+  color-scheme: light;
+
+  /* поверхности / снег */
+  --bg:        #e9f1fb;
+  --bg-2:      #dfeaf7;
+  --surface:   #ffffff;
+  --surface-2: #f3f8fe;
+  --glass:     rgba(255, 255, 255, 0.62);
+  --glass-brd: rgba(255, 255, 255, 0.7);
+
+  /* чернила */
+  --ink:    #0e1a2e;
+  --ink-2:  #2b3a52;
+  --muted:  #5a6982;
+  --line:   color-mix(in srgb, var(--ink) 11%, transparent);
+  --line-2: color-mix(in srgb, var(--ink) 18%, transparent);
+
+  /* холодная идентичность */
+  --brand:    #2a6cf0;   /* северная лазурь */
+  --brand-2:  #14b3c6;   /* аврора-циан */
+  --ice:      #7db8ff;
+  --aurora-a: #3ad0c4;
+  --aurora-b: #6a8bff;
+  --aurora-c: #b98bff;   /* лёгкий фиолет сияния, очень дозированно */
+
+  /* тёплая конверсия */
+  --cta:     #f7b733;
+  --cta-2:   #ef8f1e;
+  --cta-ink: #2a1a02;
+  --fav:     #f4a93f;
+
+  /* тени — мягкие, диффузные, окрашенные (без жёсткого чёрного) */
+  --sh-1: 0 1px 2px rgba(17, 40, 78, .06);
+  --sh-2: 0 10px 30px -10px rgba(17, 40, 78, .16);
+  --sh-3: 0 30px 70px -24px rgba(17, 40, 78, .28);
+  --sh-cta: 0 14px 32px -14px color-mix(in srgb, var(--cta) 45%, transparent);
+  --sh-inset: inset 0 1px 0 rgba(255, 255, 255, .7);
+
+  /* радиусы — squircle */
+  --r-sm: 14px;
+  --r:    22px;
+  --r-lg: 30px;
+  --r-xl: 40px;
+
+  /* пространство / ритм */
+  --container: 1200px;
+  --gutter: clamp(18px, 4vw, 40px);
+  --section-y: clamp(72px, 9vw, 168px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+
+  /* кривые движения */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --app-bar-h: 74px;
 }
+
+/* ---------- ТОКЕНЫ: ТЁМНАЯ (северная ночь) --------------------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:        #060d18;
+  --bg-2:      #081120;
+  --surface:   #0e1a2c;
+  --surface-2: #122237;
+  --glass:     rgba(14, 26, 44, 0.55);
+  --glass-brd: rgba(255, 255, 255, 0.10);
+
+  --ink:    #eaf2ff;
+  --ink-2:  #c7d6ec;
+  --muted:  #8fa1bd;
+  --line:   color-mix(in srgb, #ffffff 11%, transparent);
+  --line-2: color-mix(in srgb, #ffffff 18%, transparent);
+
+  --brand:    #5ea0ff;
+  --brand-2:  #2fd4c6;
+  --ice:      #8fc0ff;
+  --aurora-a: #2fd4c6;
+  --aurora-b: #5e8bff;
+  --aurora-c: #a98bff;
+
+  --cta:     #fbbf24;
+  --cta-2:   #f59e0b;
+  --cta-ink: #201602;
+  --fav:     #fbbf24;
+
+  --sh-1: 0 1px 2px rgba(0, 0, 0, .4);
+  --sh-2: 0 14px 34px -12px rgba(0, 0, 0, .55);
+  --sh-3: 0 36px 80px -28px rgba(0, 0, 0, .7);
+  --sh-cta: 0 18px 44px -12px color-mix(in srgb, var(--cta) 45%, transparent);
+  --sh-inset: inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+
+/* ---------- РЕСЕТ / БАЗА --------------------------------------- */
+* { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+  color: var(--ink);
+  /* Фон нейтральнее: цвет живёт в контенте, не в перманентном меше (Apple-режим). */
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-attachment: fixed;
+  min-height: 100dvh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+img, svg, video { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+input, select, textarea { font: inherit; color: inherit; }
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 72%, #fff 28%);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* Skip-link — для клавиатуры; скрыт, появляется на фокусе */
+.skip-link {
+  position: fixed; top: 10px; left: 50%; transform: translate(-50%, -200%);
+  z-index: 300; padding: 12px 22px; border-radius: 999px;
+  background: var(--brand); color: #fff; font-weight: 800; box-shadow: var(--sh-3);
+  transition: transform .2s var(--ease);
+}
+.skip-link:focus-visible { transform: translate(-50%, 0); outline-offset: 4px; }
+
+/* ---------- FLUID-ТИПОГРАФИКА (адаптив без медиа) -------------- */
+:root {
+  --fs-display: clamp(2.9rem, 7.2vw + 0.4rem, 8.5rem);
+  --fs-h1:      clamp(2.3rem, 4.6vw + 0.5rem, 5.4rem);
+  --fs-h2:      clamp(1.85rem, 2.6vw + 0.6rem, 3.6rem);
+  --fs-h3:      clamp(1.3rem, 1.2vw + 0.7rem, 2rem);
+  --fs-lead:    clamp(1.06rem, 0.6vw + 0.9rem, 1.5rem);
+  --fs-body:    clamp(1rem, 0.25vw + 0.92rem, 1.18rem);
+  --fs-sm:      clamp(0.82rem, 0.2vw + 0.76rem, 0.95rem);
+}
+
+.display, .h1, .h2, .h3 {
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.display { font-size: var(--fs-display); line-height: 0.92; }
+.h1 { font-size: var(--fs-h1); }
+.h2 { font-size: var(--fs-h2); }
+.h3 { font-size: var(--fs-h3); line-height: 1.1; letter-spacing: -0.02em; }
+.lead { font-size: var(--fs-lead); color: var(--ink-2); line-height: 1.45; text-wrap: pretty; }
+.muted { color: var(--muted); }
+.body { font-size: var(--fs-body); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  font-size: clamp(10px, 0.5vw + 8px, 12px);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.eyebrow::before {
+  content: ""; width: 7px; height: 7px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--brand-2) 80%, transparent);
+}
+
+.aurora-text {
+  background: linear-gradient(105deg, var(--brand) 0%, var(--brand-2) 45%, var(--ice) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ---------- LAYOUT -------------------------------------------- */
+.container {
+  width: min(100% - var(--gutter) * 2, var(--container));
+  /* перебиваем встроенную Tailwind-утилиту `.container` (её max-width: 1536px) */
+  max-width: var(--container);
+  margin-inline: auto;
+}
+.container--wide { --container: 1480px; }
+.section { padding-block: var(--section-y); }
+.stack { display: grid; gap: clamp(20px, 3vw, 40px); }
+
+/* Full-bleed панели (Apple-режим): одна идея на экран, смена фона.
+   Цвет живёт в панелях, а не в перманентном фоне. */
+.panel { position: relative; width: 100%; padding-block: var(--section-y); overflow: clip; scroll-margin-top: clamp(92px, 11vw, 118px); }
+.panel--snow  { background: var(--bg); }
+.panel--mist  { background: var(--surface-2); }
+.panel--pure  { background: var(--surface); }
+.panel--night {
+  background: radial-gradient(120% 90% at 50% -10%, #0e2a52 0%, transparent 60%), linear-gradient(180deg, #081428, #060f1f);
+  color: #eaf2ff;
+  /* рамочная виньетка по верх/низ — стык со светлыми панелями выглядит намеренным */
+  box-shadow: inset 0 46px 64px -46px rgba(0,0,0,.55), inset 0 -46px 64px -46px rgba(0,0,0,.55);
+}
+.panel--night .muted,
+.panel--night .lead { color: #aebfd8; }
+.panel--night .eyebrow { color: #cdddf6; border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.08); }
+
+/* Центрированная «секционная» шапка в стиле продуктовых страниц. */
+.lede { text-align: center; display: grid; gap: clamp(14px, 1.4vw, 22px); justify-items: center; max-width: 28ch; margin: 0 auto clamp(40px, 5vw, 72px); }
+.lede h2 { font-size: clamp(2.1rem, 3.6vw + 0.4rem, 4.3rem); letter-spacing: -0.03em; line-height: 1.0; }
+.lede p { max-width: 46ch; font-size: var(--fs-lead); }
+
+.grid-cards {
+  display: grid;
+  gap: clamp(16px, 1.6vw, 26px);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+.grid-2 { display: grid; gap: clamp(16px, 2vw, 28px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+
+/* ---------- КНОПКИ -------------------------------------------- */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 0 22px 0 26px;
+  border-radius: 999px;
+  font-weight: 700; font-size: 1rem; letter-spacing: -0.01em;
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease), background-color .3s var(--ease);
+  will-change: transform;
+}
+.btn:active { transform: scale(0.97); }
+.btn__ic {
+  display: grid; place-items: center;
+  width: 30px; height: 30px; border-radius: 999px;
+  transition: transform .45s var(--ease);
+}
+.btn:hover .btn__ic { transform: translate(3px, -2px) scale(1.06); }
+.btn svg { width: 18px; height: 18px; }
+
+/* первичный = тёплый янтарь под конверсию */
+.btn--cta {
+  color: var(--cta-ink);
+  background: linear-gradient(135deg, var(--cta), var(--cta-2));
+  box-shadow: var(--sh-cta);
+}
+.btn--cta .btn__ic { background: rgba(0, 0, 0, .14); }
+.btn--cta:hover { box-shadow: 0 24px 52px -12px color-mix(in srgb, var(--cta) 70%, transparent); transform: translateY(-2px); }
+
+/* вторичный = холодное стекло */
+.btn--ghost {
+  color: var(--ink);
+  background: var(--glass);
+  border: 1px solid var(--line-2);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--sh-1);
+}
+.btn--ghost .btn__ic { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.btn--ghost:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--brand) 40%, var(--line-2)); }
+
+.btn--brand {
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  box-shadow: 0 18px 40px -14px color-mix(in srgb, var(--brand) 60%, transparent);
+}
+.btn--brand .btn__ic { background: rgba(255, 255, 255, .18); }
+.btn--brand:hover { transform: translateY(-2px); }
+
+.btn--lg { min-height: 60px; font-size: 1.08rem; padding: 0 26px 0 30px; }
+
+/* ---------- ДВОЙНОЙ БЕЗЕЛЬ (машинная глубина) ----------------- */
+.bezel {
+  padding: 6px;
+  border-radius: var(--r-xl);
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  box-shadow: var(--sh-2);
+}
+.bezel__core {
+  border-radius: calc(var(--r-xl) - 6px);
+  background: var(--surface);
+  box-shadow: var(--sh-inset);
+  overflow: hidden;
+}
+
+/* стеклянная поверхность */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: var(--sh-2);
+}
+
+/* ---------- МОУШН: появление при скролле ----------------------- */
+.reveal { opacity: 0; transform: translateY(28px); filter: blur(8px); }
+.reveal.in {
+  opacity: 1; transform: none; filter: none;
+  transition: opacity .8s var(--ease-out), transform .9s var(--ease-out), filter .9s var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes auroraShift {
+  0% { transform: translate3d(0,0,0) scale(1); }
+  50% { transform: translate3d(2%, -2%, 0) scale(1.05); }
+  100% { transform: translate3d(0,0,0) scale(1); }
+}
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+.skeleton {
+  background: linear-gradient(100deg, var(--surface-2) 30%, color-mix(in srgb, var(--ink) 6%, var(--surface-2)) 50%, var(--surface-2) 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+/* плавающий блик-«сияние» в фоне героя */
+.aurora-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(60px); opacity: .5; pointer-events: none;
+  animation: auroraShift 14s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { .aurora-orb { animation: none; } }
+
+/* ---------- БОЛЬШИЕ ЭКРАНЫ / 2K / 4K / SMART TV --------------- */
+/* Контейнер растёт, чтобы на 4K не было узкой «полоски» по центру,
+   но читаемые блоки (.lead, .dogblock p) ограничены отдельно мерой. */
+@media (min-width: 1700px) { :root { --container: 1340px; } }
+@media (min-width: 2000px) {
+  :root { --container: 1560px; }
+  body { font-size: 18px; }
+}
+@media (min-width: 2560px) {
+  :root { --container: 1900px; }
+  body { font-size: 20px; }
+}
+@media (min-width: 3200px) {
+  :root { --container: 2400px; --r-lg: 34px; --r-xl: 48px; }
+  body { font-size: 23px; }
+}
+/* На очень больших экранах нижний таб-бар не нужен (это десктоп/ТВ). */
+@media (min-width: 3200px) {
+  .dogblock p, .lead { max-width: 78ch; }
 }
