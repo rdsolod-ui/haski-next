@@ -53,6 +53,9 @@ old_target=""
 if [[ -L "$current_link" ]]; then
   old_target="$(readlink -f -- "$current_link")"
   printf '%s\n' "$old_target" > "$backups_root/current-before-$release_id.txt"
+elif [[ -d "$app_root/out" ]]; then
+  old_target="$app_root/out"
+  tar -C "$app_root" -czf "$backups_root/out-before-$release_id.tar.gz" out
 fi
 for vhost in \
   /etc/nginx/sites-available/haski.parkskazka.ru \
