@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
 import {
   allDogs, getDog, dogSlug, coverUrl, galleryUrls, isDog, breedLabel,
   getSection, relatedDogs, navDog,
 } from "@/lib/data";
 import DogGallery from "@/components/DogGallery";
+import DogImage, { localDogCover } from "@/components/DogImage";
 import DogCard from "@/components/DogCard";
 import FavButton from "@/components/FavButton";
 import StickyCTA from "@/components/StickyCTA";
@@ -64,7 +65,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
     .filter(Boolean)
     .filter((v, i, a) => a.indexOf(v) === i) as string[];
 
-  const favItem = { slug: dogSlug(dog), name: dog.name_ru, breed: dog.breed_species || dog.family, img: coverUrl(dog), url: `/dogs/${dogSlug(dog)}` };
+  const favItem = { slug: dogSlug(dog), name: dog.name_ru, breed: dog.breed_species || dog.family, img: localDogCover(dogSlug(dog), 480), url: `/dogs/${dogSlug(dog)}` };
 
   const subAnchors = [
     dog.character ? { href: "#character", label: "Характер" } : null,
@@ -131,7 +132,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
 
         <Reveal className="dogpage__visual bezel">
           <div className="bezel__core">
-            <DogGallery images={gallery} alt={dog.image_alt || dog.name_ru} />
+            <DogGallery images={gallery} alt={dog.image_alt || dog.name_ru} slug={dogSlug(dog)} />
           </div>
         </Reveal>
       </div>
@@ -268,7 +269,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
         <div className="navhub">
           {nav ? (
             <Link href={`/dogs/${dogSlug(nav.dog)}`} className="navhub__feat">
-              <div className="navhub__photo"><img src={coverUrl(nav.dog)} alt={nav.dog.name_ru} loading="lazy" /></div>
+              <div className="navhub__photo"><DogImage slug={dogSlug(nav.dog)} alt={nav.dog.name_ru} sizes="(max-width: 760px) 92vw, 420px" /></div>
               <div className="navhub__featbody">
                 <span className="eyebrow">{nav.label}</span>
                 <h3 className="h3">{nav.dog.name_ru}</h3>

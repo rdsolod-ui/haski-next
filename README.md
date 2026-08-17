@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Хаски Лэнд — haski.parkskazka.ru
 
-## Getting Started
+Канонический исходный проект статического сайта Хаски Лэнд в Парке Сказка. Next.js собирает immutable static export для Nginx; production не является местом разработки.
 
-First, run the development server:
+## Контракты, которые нельзя ломать
+
+- Все 39 исторических URL должны оставаться рабочими.
+- 30 адресов `/dogs/<slug>` закреплены напечатанными QR-кодами на вольерах. Их нельзя переименовывать или удалять без отдельного решения владельца и redirect map.
+- CTA остаётся «Купить билет» и ведёт на `https://prices.parkskazka.com/`.
+- Яндекс.Метрика загружается одним тегом и инициализирует оба подтверждённых счётчика: `108579634` и `109784590`.
+
+Контракт маршрутов хранится в `tests/contracts/legacy-routes.json` и проверяется после каждой сборки.
+
+## Локальная работа
+
+Требования: Node.js 22+, npm.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm ci
+npm run lint
+npm run build
+npm run test:routes
+npm run test:e2e
+npm run test:lighthouse
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Полный контур: `npm run check`. Результат сборки находится в `out/`. Команда `npm run artifact:manifest` добавляет SHA-256 manifest для неизменяемого release artifact.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Адаптивные изображения собак и hero воспроизводимо генерируются командой:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+node scripts/generate-responsive-media.mjs
+```
 
-## Learn More
+## CI и выпуск
 
-To learn more about Next.js, take a look at the following resources:
+GitHub Actions выполняет lint, production build, проверку 39 исторических URL, browser acceptance в Chromium/WebKit, Lighthouse mobile/desktop и публикует проверенный `out/` как artifact. Dependency tree должен проходить `npm audit` без уязвимостей.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Production-схема:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+/var/www/haski-next/
+├── releases/<timestamp>-<sha>/
+├── current -> releases/<active>
+└── backups/
+```
 
-## Deploy on Vercel
+Nginx-конфигурация находится в `haski-nginx.conf`, security headers — в `ops/nginx/haski-security-headers.conf`, атомарный выпуск с проверкой hash/smoke/rollback — в `ops/deploy-release.sh`. GitHub push и VPS deployment являются разными воротами; серверный выпуск выполняется только после отдельного подтверждения владельца.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Осознанный backlog
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Полные галереи пока читаются из существующего same-origin `/assets/`; адаптивные обложки и hero уже принадлежат immutable artifact.
+- Цены, отзывы, медицинские ограничения, возвраты, парковка и новые коммерческие обещания не публикуются без подтверждённых бизнес-данных.
+- Manifest честно заявляет browser-mode: offline/PWA не обещается без service worker, offline fallback и update flow.
+- Полный редизайн и moodboard требуют отдельного визуального утверждения; текущий выпуск стабилизирует и развивает существующую концепцию.

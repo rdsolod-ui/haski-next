@@ -72,6 +72,7 @@ export interface SectionRaw {
 export interface Section extends SectionRaw {
   slug: string;
   cover: string | null;
+  coverSlug: string | null;
   count: number;
 }
 
@@ -146,6 +147,7 @@ export function allSections(): Section[] {
         ...s,
         slug: s.id,
         cover: inSection[0] ? coverUrl(inSection[0]) : null,
+        coverSlug: inSection[0] ? dogSlug(inSection[0]) : null,
         count: inSection.length,
       };
     });

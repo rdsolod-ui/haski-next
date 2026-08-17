@@ -19,13 +19,8 @@ const QUICK: { label: string; q: string }[] = [
 export default function SearchClient() {
   const params = useSearchParams();
   const sections = useMemo(() => allSections(), []);
-  const [query, setQuery] = useState("");
-  const [section, setSection] = useState("");
-
-  useEffect(() => {
-    setQuery(params.get("q") ?? "");
-    setSection(params.get("section") ?? "");
-  }, [params]);
+  const [query, setQuery] = useState(() => params.get("q") ?? "");
+  const [section, setSection] = useState(() => params.get("section") ?? "");
 
   // держим URL в синхроне (deep-link/назад), без перерисовки роутера
   useEffect(() => {
@@ -47,6 +42,8 @@ export default function SearchClient() {
           <span className="searchui__icon"><IconSearch /></span>
           <input
             className="searchui__input"
+            name="q"
+            type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Кличка, порода, окрас, характер… например: Адель, самоед, голубые глаза"

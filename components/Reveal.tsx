@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode, type ElementType, type CSSProperties } from "react";
+import { useLayoutEffect, useRef, type ReactNode, type ElementType, type CSSProperties } from "react";
 
 /**
- * Лёгкое появление при скролле через IntersectionObserver (без scroll-listener).
- * Анимация — на transform/opacity/filter (GPU). Уважает reduced-motion.
- * Прозрачно прокидывает прочие пропсы (id, role и т.п.) на корневой тег.
+ * Progressive enhancement: content is visible in HTML and remains visible
+ * without JavaScript, IntersectionObserver, or when the bundle fails.
  */
 export default function Reveal({
   children,
@@ -24,27 +23,40 @@ export default function Reveal({
 }) {
   const ref = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.classList.add("in");
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !("IntersectionObserver" in window)
+    ) {
       return;
     }
-    const io = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            (e.target as HTMLElement).style.transitionDelay = `${delay}ms`;
-            e.target.classList.add("in");
-            obs.unobserve(e.target);
+
+    const bounds = el.getBoundingClientRect();
+    if (bounds.top < window.innerHeight * 0.96 && bounds.bottom > 0) return;
+
+    let io: IntersectionObserver | undefined;
+    try {
+      el.style.transitionDelay = `${delay}ms`;
+      el.classList.add("is-reveal-ready");
+      io = new IntersectionObserver(
+        (entries, observer) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
           }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -6% 0px" }
+      );
+      io.observe(el);
+    } catch {
+      el.classList.remove("is-reveal-ready");
+      el.style.removeProperty("transition-delay");
+    }
+
+    return () => io?.disconnect();
   }, [delay]);
 
   return (

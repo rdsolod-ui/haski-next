@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Unbounded, Manrope } from "next/font/google";
 import "./globals.css";
 import "./components.css";
 import { SITE } from "@/lib/constants";
@@ -9,19 +8,7 @@ import BottomNav from "@/components/BottomNav";
 import ScrollTop from "@/components/ScrollTop";
 import FavoritesProvider from "@/components/FavoritesProvider";
 import JsonLd from "@/components/JsonLd";
-
-const display = Unbounded({
-  subsets: ["cyrillic", "latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-display",
-  display: "swap",
-});
-const body = Manrope({
-  subsets: ["cyrillic", "latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-body",
-  display: "swap",
-});
+import Metrika from "@/components/Metrika";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.baseUrl),
@@ -39,8 +26,9 @@ export const metadata: Metadata = {
     locale: "ru_RU",
     siteName: SITE.fullName,
     url: SITE.baseUrl,
+    images: [{ url: "/img/haski-hero-final.webp", width: 1920, height: 1080, alt: "Хаски Лэнд в Парке Сказка" }],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", images: ["/img/haski-hero-final.webp"] },
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     apple: "/apple-touch-icon.png",
@@ -53,10 +41,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
 };
-
-const METRIKA_HASKI = `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=${SITE.metrikaIdHaski}','ym');ym(${SITE.metrikaIdHaski},'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",referrer:document.referrer,url:location.href,accurateTrackBounce:true,trackLinks:true});`;
-
-const METRIKA = `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=${SITE.metrikaId}','ym');ym(${SITE.metrikaId},'init',{ssr:true,webvisor:true,clickmap:true,accurateTrackBounce:true,trackLinks:true});`;
 
 const websiteLd = {
   "@context": "https://schema.org",
@@ -73,11 +57,8 @@ const websiteLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" data-theme="dark" className={`${display.variable} ${body.variable}`}>
+    <html lang="ru" data-theme="dark">
       <head>
-        <link rel="preconnect" href="https://haski.parkskazka.ru" crossOrigin="" />
-        <link rel="preconnect" href="https://mc.yandex.ru" crossOrigin="" />
-        <script dangerouslySetInnerHTML={{ __html: METRIKA_HASKI }} />
         <JsonLd data={websiteLd} />
       </head>
       <body>
@@ -89,10 +70,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <BottomNav />
           <ScrollTop />
         </FavoritesProvider>
-        <script dangerouslySetInnerHTML={{ __html: METRIKA }} />
+        <Metrika />
         <noscript>
-          <img src={`https://mc.yandex.ru/watch/${SITE.metrikaId}`} style={{ position: "absolute", left: "-9999px" }} alt="" />
-          <img src={`https://mc.yandex.ru/watch/${SITE.metrikaIdHaski}`} style={{ position: "absolute", left: "-9999px" }} alt="" />
+          {SITE.metrikaIds.map((id) => (
+            <img key={id} src={`https://mc.yandex.ru/watch/${id}`} style={{ position: "absolute", left: "-9999px" }} alt="" />
+          ))}
         </noscript>
       </body>
     </html>

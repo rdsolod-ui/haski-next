@@ -9,12 +9,13 @@
 
 @theme inline {
   --font-display: var(--font-display);
-  --font-body: var(--font-body);
 }
 
 /* ---------- ТОКЕНЫ: СВЕТЛАЯ (по умолчанию) ---------------------- */
 :root {
   color-scheme: light;
+  --font-display: ui-rounded, "Arial Black", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* поверхности / снег */
   --bg:        #e9f1fb;
@@ -166,7 +167,13 @@ input, select, textarea { font: inherit; color: inherit; }
 .display { font-size: var(--fs-display); line-height: 0.92; }
 .h1 { font-size: var(--fs-h1); }
 .h2 { font-size: var(--fs-h2); }
-.h3 { font-size: var(--fs-h3); line-height: 1.1; letter-spacing: -0.02em; }
+.h3 {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
 .lead { font-size: var(--fs-lead); color: var(--ink-2); line-height: 1.45; text-wrap: pretty; }
 .muted { color: var(--muted); }
 .body { font-size: var(--fs-body); }
@@ -307,14 +314,16 @@ input, select, textarea { font: inherit; color: inherit; }
   box-shadow: var(--sh-2);
 }
 
-/* ---------- МОУШН: появление при скролле ----------------------- */
-.reveal { opacity: 0; transform: translateY(28px); filter: blur(8px); }
-.reveal.in {
-  opacity: 1; transform: none; filter: none;
-  transition: opacity .8s var(--ease-out), transform .9s var(--ease-out), filter .9s var(--ease-out);
+/* ---------- МОУШН: progressive enhancement -------------------- */
+/* Базовое состояние всегда видимо: no-JS и ошибка bundle не скрывают контент. */
+.reveal { opacity: 1; transform: none; }
+.reveal.is-reveal-ready:not(.in) { opacity: 0; transform: translateY(18px); }
+.reveal.is-reveal-ready {
+  transition: opacity .42s var(--ease-out), transform .46s var(--ease-out);
 }
+.reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
 @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }

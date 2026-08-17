@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
 import {
   allSections, getDog, dogSlug, TOTAL_DOGS, TOTAL_SECTIONS,
@@ -25,7 +25,7 @@ const FAQ = [
 const SCENARIOS = [
   { icon: <IconPaw />, title: "Хочу выбрать собаку", text: "Листайте каталог и собирайте любимцев в избранное до приезда.", href: "/search", cta: "Открыть каталог" },
   { icon: <IconMountain />, title: "Хочу посмотреть разделы", text: "Хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели.", href: "/sections", cta: "Все разделы" },
-  { icon: <IconHeart />, title: "Планирую визит с ребёнком", text: "Покажите ребёнку собак заранее и обсудите правила бережного контакта.", href: "/search", cta: "Подобрать любимца" },
+  { icon: <IconHeart />, title: "Планирую визит с ребёнком", text: "Проверьте правила сопровождения, адрес и актуальные условия до поездки.", href: "/visit", cta: "Спланировать визит" },
 ];
 
 export default function HomePage() {
@@ -97,7 +97,7 @@ export default function HomePage() {
           </Reveal>
           <div className="grid-cards">
             {popular.map((d, i) => (
-              <Reveal key={d.id} delay={(i % 4) * 60}><DogCard dog={d} priority={i < 4} /></Reveal>
+              <Reveal key={d.id} delay={(i % 4) * 60}><DogCard dog={d} /></Reveal>
             ))}
           </div>
           <div className="panel__foot">

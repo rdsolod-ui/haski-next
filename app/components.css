@@ -6,7 +6,8 @@
 /* ---------- Каркас страницы ----------------------------------- */
 .site-main { padding-top: clamp(96px, 12vw, 132px); }
 @media (max-width: 900px) {
-  body { padding-bottom: calc(var(--app-bar-h) + 26px + var(--safe-b)); }
+  body { padding-bottom: calc(var(--app-bar-h) + 28px + var(--safe-b)); }
+  .sitefooter { padding-bottom: calc(32px + var(--safe-b)); }
 }
 
 /* ---------- Бренд --------------------------------------------- */
@@ -128,7 +129,8 @@
 .favdrawer__emoji { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 20px; color: var(--fav); background: color-mix(in srgb, var(--fav) 14%, var(--surface)); }
 .favdrawer__emoji svg { width: 30px; height: 30px; }
 .favdrawer__foot { padding: 14px 22px calc(18px + var(--safe-b)); border-top: 1px solid var(--line); display: grid; gap: 10px; }
-.favrow { display: grid; grid-template-columns: 60px 1fr auto; gap: 12px; align-items: center; padding: 9px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); transition: border-color .2s, transform .15s; }
+.favrow { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 9px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); transition: border-color .2s, transform .15s; }
+.favrow__link { min-width: 0; display: grid; grid-template-columns: 60px 1fr; gap: 12px; align-items: center; border-radius: 12px; }
 .favrow:hover { border-color: var(--line-2); transform: translateY(-1px); }
 .favrow__media { width: 60px; height: 60px; border-radius: 12px; overflow: hidden; background: var(--surface-2); }
 .favrow__media img { width: 100%; height: 100%; object-fit: cover; }
@@ -146,7 +148,8 @@
   display: none; grid-template-columns: auto 1fr; gap: 10px; align-items: center; padding: 8px; border-radius: 22px;
   transform: translateY(150%); transition: transform .42s var(--ease);
 }
-@media (max-width: 900px) { .dogpage .stickycta { display: grid; } }
+/* На mobile единственный conversion layer — нижняя навигация с CTA. */
+@media (max-width: 900px) { .dogpage .stickycta { display: none; } }
 .stickycta.is-visible { transform: none; }
 .stickycta__fav { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 15px; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--ink); }
 .stickycta__fav svg { width: 23px; height: 23px; }
@@ -155,7 +158,7 @@
 .stickycta__ticket svg { width: 20px; height: 20px; }
 
 /* ---------- Карточка собаки ----------------------------------- */
-.dogcard { border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: 0 1px 2px rgba(17,40,78,.04); transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
+.dogcard { border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: 0 1px 2px rgba(17,40,78,.04); transition: transform .32s var(--ease), box-shadow .32s var(--ease); content-visibility: auto; contain-intrinsic-size: 420px 620px; }
 .dogcard:hover { transform: translateY(-6px); box-shadow: var(--sh-3); }
 .dogcard__link { display: block; color: inherit; }
 .dogcard__media { position: relative; aspect-ratio: 3/4; overflow: hidden; }
@@ -176,7 +179,7 @@
 .grid-cards > .reveal { display: flex; flex-direction: column; }
 .grid-cards > .reveal > * { flex: 1; }
 
-.seccard { display: flex; flex-direction: column; border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: 0 1px 2px rgba(17,40,78,.04); transition: transform .5s var(--ease), box-shadow .5s var(--ease); color: inherit; }
+.seccard { display: flex; flex-direction: column; border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: 0 1px 2px rgba(17,40,78,.04); transition: transform .32s var(--ease), box-shadow .32s var(--ease); color: inherit; content-visibility: auto; contain-intrinsic-size: 420px 520px; }
 .seccard:hover { transform: translateY(-6px); box-shadow: var(--sh-3); }
 .seccard__media { position: relative; aspect-ratio: 16/11; overflow: hidden; }
 .seccard__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
@@ -256,8 +259,8 @@
 .panel__foot { display: flex; justify-content: center; margin-top: clamp(28px, 4vw, 48px); }
 
 /* ---------- Pinned scroll-story (как Apple word-reveal) -------- */
-.story { position: relative; height: 190vh; background: var(--surface-2); }
-.story__sticky { position: sticky; top: 0; min-height: 100svh; display: flex; align-items: center; justify-content: center; padding-inline: var(--gutter); }
+.story { position: relative; min-height: 72svh; background: var(--surface-2); }
+.story__sticky { position: relative; min-height: 72svh; display: flex; align-items: center; justify-content: center; padding: var(--section-y) var(--gutter); }
 .story__text { width: 100%; max-width: 16ch; margin: 0 auto; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(2.1rem, 5.6vw, 6.4rem); line-height: 1.06; letter-spacing: -0.035em; text-wrap: balance; }
 .story__word { display: inline; }
 @media (max-width: 600px) { .story { height: 170vh; } .story__text { max-width: 13ch; } }
@@ -265,6 +268,7 @@
 /* ---------- Sticky продуктовая под-навигация (Explore/Buy) ----- */
 .subnav { position: fixed; inset: calc(var(--safe-t) + 14px) 0 auto 0; z-index: 82; display: flex; justify-content: center; padding-inline: var(--gutter); pointer-events: none; opacity: 0; transform: translateY(-12px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
 .subnav.is-on { opacity: 1; transform: none; }
+.subnav:not(.is-on) .subnav__pill { pointer-events: none; }
 .subnav__pill { pointer-events: auto; width: min(100%, 1180px); display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 18px; padding: 8px 10px 8px 22px; border-radius: 999px; }
 .subnav__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .subnav__anchors { display: flex; gap: 4px; }
@@ -426,6 +430,27 @@
 .pagehero { display: grid; gap: 18px; max-width: 820px; }
 .pagehero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
 
+/* ---------- Информационные страницы --------------------------- */
+.info-page { display: grid; gap: 0; }
+.info-section { margin-top: clamp(56px, 8vw, 112px); }
+.info-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 3vw, 32px); }
+.info-card {
+  display: grid; align-content: start; gap: 16px;
+  padding: clamp(24px, 4vw, 44px); border-radius: var(--r-lg);
+  color: var(--ink); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--sh-2);
+}
+.info-card p { color: var(--ink-2); }
+.info-card .seccard__go { margin-top: auto; padding-top: 12px; width: fit-content; }
+.source-note {
+  margin-top: 28px; padding: 16px 18px; border-left: 3px solid var(--brand);
+  color: var(--muted); background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  border-radius: 0 14px 14px 0; font-size: .92rem;
+}
+@media (max-width: 760px) {
+  .info-split { grid-template-columns: 1fr; }
+  .info-card { padding: 24px; }
+}
+
 /* ---------- Кинематографичный герой (графит → глаза → собака) -- */
 .hc { position: relative; height: 240vh; background: #070b12; }
 .hc--static { height: auto; }
@@ -463,21 +488,21 @@
 
 /* ---------- Scroll-driven image-sequence hero ----------------- */
 /* тянем сцену под плавающую шапку (гасим padding-top у .site-main) — full-bleed */
-.haski-sequence-hero { position: relative; height: 185svh; background: #05070a; margin-top: calc(-1 * clamp(96px, 12vw, 132px)); }
-.haski-sequence-hero__sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; background: #05070a; }
+.haski-sequence-hero { position: relative; height: 100svh; min-height: 640px; background: #05070a; margin-top: calc(-1 * clamp(96px, 12vw, 132px)); }
+.haski-sequence-hero__sticky { position: relative; height: 100%; min-height: inherit; overflow: hidden; background: #05070a; }
 .haski-sequence-hero__poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transition: opacity .5s ease; }
-.haski-sequence-hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 2; }
+.haski-sequence-hero__canvas { display: none; }
 /* лёгкая виньетка + читаемость текста слева (desktop) */
 .haski-sequence-hero__backdrop { position: absolute; inset: 0; z-index: 3; pointer-events: none;
   background: radial-gradient(130% 100% at 72% 46%, transparent 38%, rgba(5,7,10,.46) 100%); }
 .haski-sequence-hero__overlay { position: absolute; inset: 0; z-index: 4; pointer-events: none;
   background: linear-gradient(90deg, rgba(4,6,10,.95) 0%, rgba(4,6,10,.72) 24%, rgba(4,6,10,.18) 48%, transparent 64%); }
 .haski-sequence-hero__content { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center;
-  padding-inline: clamp(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)), 13vw); }
+  padding: clamp(92px, 10vh, 112px) clamp(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)), 13vw) 24px; }
 .haski-sequence-hero__inner { max-width: 44ch; color: #fff; display: grid; gap: clamp(16px, 2vw, 24px); }
 /* по-строчная маска заголовка: строки «падают» сверху из-под маски */
 .haski-sequence-hero__line { display: block; overflow: hidden; line-height: 1.02; padding: 0.06em 0.04em 0.16em; margin-block: -0.05em -0.12em; }
-.haski-sequence-hero__lineInner { display: block; will-change: transform; }
+.haski-sequence-hero__lineInner { display: block; }
 .haski-sequence-hero__title { color: #fff; max-width: 16ch; font-size: clamp(2.3rem, 5vw, 5.6rem); line-height: 0.98; }
 .haski-sequence-hero__lead { color: rgba(255,255,255,.84); max-width: 42ch; font-size: var(--fs-lead); }
 .haski-sequence-hero__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 4px; }
@@ -509,22 +534,23 @@
   .scrolltop { bottom: calc(var(--app-bar-h) + 78px + var(--safe-b)); width: 46px; height: 46px; }
 }
 
-/* reduced-motion: статичный постер */
-.haski-sequence-hero.is-static { height: 100svh; }
+/* poster-first hero */
+.haski-sequence-hero.is-static { height: 100svh; min-height: 640px; }
 .haski-sequence-hero.is-static .haski-sequence-hero__canvas,
 .haski-sequence-hero.is-static .haski-sequence-hero__hintwrap { display: none; }
 .haski-sequence-hero.is-static .haski-sequence-hero__inner { opacity: 1 !important; transform: none !important; }
 
 /* MOBILE: горизонтальный кадр как «cinematic frame» в вертикальной графитовой композиции */
 @media (max-width: 760px) {
-  .haski-sequence-hero { height: 175svh; }
+  .haski-sequence-hero,
+  .haski-sequence-hero.is-static { height: 100svh; min-height: 660px; }
   .haski-sequence-hero__sticky {
     background: radial-gradient(120% 62% at 50% 20%, #14202f 0%, #0a0f17 56%, #05070a 100%);
   }
   .haski-sequence-hero__poster,
   .haski-sequence-hero__canvas {
-    inset: auto 0 auto 0; top: calc(var(--safe-t) + 11svh);
-    width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain;
+    inset: 0;
+    width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: 62% center;
   }
   /* мягкое свечение сверху + графитовая виньетка по краям кадра */
   .haski-sequence-hero__backdrop {
@@ -537,7 +563,7 @@
     background: linear-gradient(180deg, transparent 38%, rgba(5,7,10,.55) 64%, #05070a 92%);
   }
   .haski-sequence-hero__content { align-items: flex-end; justify-content: center;
-    padding: 0 var(--gutter) calc(12svh + var(--safe-b)); }
+    padding: 0 var(--gutter) calc(10svh + var(--safe-b)); }
   .haski-sequence-hero__inner { max-width: none; justify-items: center; text-align: center; }
   .haski-sequence-hero__title { max-width: 14ch; font-size: clamp(2.2rem, 9vw, 3.4rem); }
   .haski-sequence-hero__lead { max-width: 36ch; }

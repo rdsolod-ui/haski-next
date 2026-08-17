@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
 import { allSections, TOTAL_DOGS, TOTAL_SECTIONS } from "@/lib/data";
 import SectionCard from "@/components/SectionCard";

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import Link from "next/link";
+import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
 import SearchClient from "@/components/SearchClient";
 import JsonLd from "@/components/JsonLd";
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   title: "Поиск собак Хаски Лэнд — каталог хаски, маламутов, самоедов",
   description:
     "Каталог собак Хаски Лэнд: ищите по кличке, породе, окрасу и характеру. Хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели Парка Сказка.",
-  alternates: { canonical: "/search" },
-  openGraph: { title: "Поиск собак Хаски Лэнд", url: SITE.baseUrl + "/search" },
+  alternates: { canonical: "/dogs" },
+  openGraph: { title: "Поиск собак Хаски Лэнд", url: SITE.baseUrl + "/dogs" },
 };
 
 export default function SearchPage() {

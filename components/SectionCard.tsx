@@ -1,5 +1,6 @@
-import Link from "next/link";
+import Link from "@/components/StaticLink";
 import { plural, type Section } from "@/lib/data";
+import DogImage from "./DogImage";
 import { IconArrow } from "./Icons";
 
 export default function SectionCard({ section }: { section: Section }) {
@@ -8,8 +9,8 @@ export default function SectionCard({ section }: { section: Section }) {
   return (
     <Link href={`/sections/${section.slug}`} className="seccard" data-analytics="open-section">
       <div className="seccard__media">
-        {section.cover ? (
-          <img src={section.cover} alt={section.name} loading="lazy" width={800} height={800} decoding="async" />
+        {section.coverSlug ? (
+          <DogImage slug={section.coverSlug} alt={section.name} sizes="(max-width: 700px) 92vw, 360px" />
         ) : (
           <div className="seccard__ph" />
         )}
