@@ -41,9 +41,15 @@ if [[ -L "$current_link" ]]; then
   old_target="$(readlink -f -- "$current_link")"
   printf '%s\n' "$old_target" > "$backups_root/current-before-$release_id.txt"
 fi
-if [[ -f /etc/nginx/sites-available/haski.parkskazka.ru ]]; then
-  cp -a /etc/nginx/sites-available/haski.parkskazka.ru "$backups_root/nginx-before-$release_id.conf"
-fi
+for vhost in \
+  /etc/nginx/sites-available/haski.parkskazka.ru \
+  /etc/nginx/sites-available/haski.parkskazka.ru.conf \
+  /etc/nginx/sites-enabled/haski.parkskazka.ru.conf; do
+  if [[ -f "$vhost" ]]; then
+    vhost_scope="$(basename "$(dirname "$vhost")")"
+    cp -a "$vhost" "$backups_root/nginx-${vhost_scope}-$(basename "$vhost")-before-$release_id"
+  fi
+done
 
 nginx -t
 ln -s -- "$release_dir" "$temporary_link"
