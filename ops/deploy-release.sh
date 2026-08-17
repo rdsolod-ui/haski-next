@@ -111,7 +111,13 @@ fi
 systemctl reload nginx
 
 expected_index_hash="$(sha256sum "$release_dir/index.html" | cut -d' ' -f1)"
-public_index_hash="$(curl --fail --silent --show-error --max-time 15 https://haski.parkskazka.ru/ | sha256sum | cut -d' ' -f1)"
+public_index_hash=""
+for attempt in {1..10}; do
+  public_index_hash="$(curl --fail --silent --show-error --max-time 15 https://haski.parkskazka.ru/ | sha256sum | cut -d' ' -f1)"
+  [[ "$public_index_hash" == "$expected_index_hash" ]] && break
+  echo "Public hash attempt $attempt/10: expected=$expected_index_hash actual=$public_index_hash" >&2
+  sleep 1
+done
 if [[ "$public_index_hash" != "$expected_index_hash" ]]; then
   rollback
   nginx -t
