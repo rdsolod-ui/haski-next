@@ -39,14 +39,14 @@ jobs:
       - name: Protect legacy and QR-code URLs
         run: npm run test:routes
 
+      - name: Enforce Lighthouse budgets
+        run: npm run test:lighthouse
+
       - name: Install Chromium for browser acceptance
         run: npx playwright install --with-deps chromium webkit
 
       - name: Run desktop and mobile acceptance tests
         run: npm run test:e2e
-
-      - name: Enforce Lighthouse budgets
-        run: npm run test:lighthouse
 
       - name: Create SHA-256 release manifest
         run: npm run artifact:manifest

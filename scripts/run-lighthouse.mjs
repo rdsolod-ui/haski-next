@@ -81,29 +81,38 @@ const thresholds = {
 const failures = [];
 try {
   for (const profile of profiles) {
-    const result = await lighthouse(`http://127.0.0.1:${port}/`, {
-      port: chrome.port,
-      output: ["json", "html"],
-      logLevel: "error",
-      onlyCategories: Object.keys(thresholds),
-      throttlingMethod: "simulate",
-      ...profile.flags,
-    });
-    if (!result) throw new Error(`Lighthouse returned no result for ${profile.name}`);
+    const runs = [];
+    for (let run = 1; run <= 3; run += 1) {
+      const result = await lighthouse(`http://127.0.0.1:${port}/`, {
+        port: chrome.port,
+        output: ["json", "html"],
+        logLevel: "error",
+        onlyCategories: Object.keys(thresholds),
+        throttlingMethod: "simulate",
+        ...profile.flags,
+      });
+      if (!result) throw new Error(`Lighthouse returned no result for ${profile.name}, run ${run}`);
 
-    const [json, html] = result.report;
+      const [json, html] = result.report;
+      const scores = Object.fromEntries(
+        Object.keys(thresholds).map((category) => [category, result.lhr.categories[category].score ?? 0]),
+      );
+      const metrics = {
+        lcpMs: Math.round(result.lhr.audits["largest-contentful-paint"].numericValue ?? 0),
+        tbtMs: Math.round(result.lhr.audits["total-blocking-time"].numericValue ?? 0),
+        cls: Number((result.lhr.audits["cumulative-layout-shift"].numericValue ?? 0).toFixed(3)),
+      };
+      runs.push({ scores, metrics, json, html });
+      await writeFile(path.join(reportDirectory, `${profile.name}-run-${run}.json`), json, "utf8");
+      await writeFile(path.join(reportDirectory, `${profile.name}-run-${run}.html`), html, "utf8");
+      console.log(`${profile.name} run ${run}: ${JSON.stringify({ scores, metrics })}`);
+    }
+
+    runs.sort((a, b) => a.scores.performance - b.scores.performance);
+    const { scores, metrics, json, html } = runs[1];
     await writeFile(path.join(reportDirectory, `${profile.name}.json`), json, "utf8");
     await writeFile(path.join(reportDirectory, `${profile.name}.html`), html, "utf8");
-
-    const scores = Object.fromEntries(
-      Object.keys(thresholds).map((category) => [category, result.lhr.categories[category].score ?? 0]),
-    );
-    const metrics = {
-      lcpMs: Math.round(result.lhr.audits["largest-contentful-paint"].numericValue ?? 0),
-      tbtMs: Math.round(result.lhr.audits["total-blocking-time"].numericValue ?? 0),
-      cls: Number((result.lhr.audits["cumulative-layout-shift"].numericValue ?? 0).toFixed(3)),
-    };
-    console.log(`${profile.name}: ${JSON.stringify({ scores, metrics })}`);
+    console.log(`${profile.name} median: ${JSON.stringify({ scores, metrics })}`);
 
     for (const [category, minimum] of Object.entries(thresholds)) {
       if (scores[category] < minimum) failures.push(`${profile.name} ${category}: ${scores[category]} < ${minimum}`);

@@ -15,11 +15,11 @@
 | Профиль | Состояние | Performance | Accessibility | Best Practices | SEO | LCP | TBT | CLS |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
 | Mobile | production baseline | 44 | 92 | 73 | 100 | 6,37 с | 5,02 с | — |
-| Mobile | candidate | 97 | 100 | 100 | 100 | 2,417 с | 77 мс | 0 |
+| Mobile | candidate, median of 3 | 98 | 100 | 100 | 100 | 2,361 с | 50 мс | 0 |
 | Desktop | production baseline | 65 | 96 | 73 | 100 | — | 0,8 с | — |
-| Desktop | candidate | 98 | 100 | 100 | 100 | 2,379 с | 48 мс | 0 |
+| Desktop | candidate, median of 3 | 98 | 100 | 100 | 100 | 2,394 с | 83 мс | 0 |
 
-Команда: `npm run test:lighthouse`. Отчёты HTML/JSON сохраняются в `reports/lighthouse/` и публикуются CI artifact.
+Команда: `npm run test:lighthouse`. Для защиты от шума shared runner каждый профиль измеряется трижды, а бюджеты применяются к медианному Performance run. Отчёты HTML/JSON сохраняются в `reports/lighthouse/` и публикуются CI artifact.
 
 ## Автоматическая приёмка
 
