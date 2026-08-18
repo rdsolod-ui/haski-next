@@ -82,7 +82,7 @@ const failures = [];
 try {
   for (const profile of profiles) {
     const runs = [];
-    for (let run = 1; run <= 3; run += 1) {
+    for (let run = 0; run <= 3; run += 1) {
       const result = await lighthouse(`http://127.0.0.1:${port}/`, {
         port: chrome.port,
         output: ["json", "html"],
@@ -91,7 +91,8 @@ try {
         throttlingMethod: "simulate",
         ...profile.flags,
       });
-      if (!result) throw new Error(`Lighthouse returned no result for ${profile.name}, run ${run}`);
+      const runLabel = run === 0 ? "warm-up" : `run ${run}`;
+      if (!result) throw new Error(`Lighthouse returned no result for ${profile.name}, ${runLabel}`);
 
       const [json, html] = result.report;
       const scores = Object.fromEntries(
@@ -102,10 +103,12 @@ try {
         tbtMs: Math.round(result.lhr.audits["total-blocking-time"].numericValue ?? 0),
         cls: Number((result.lhr.audits["cumulative-layout-shift"].numericValue ?? 0).toFixed(3)),
       };
+      console.log(`${profile.name} ${runLabel}: ${JSON.stringify({ scores, metrics })}`);
+      if (run === 0) continue;
+
       runs.push({ scores, metrics, json, html });
       await writeFile(path.join(reportDirectory, `${profile.name}-run-${run}.json`), json, "utf8");
       await writeFile(path.join(reportDirectory, `${profile.name}-run-${run}.html`), html, "utf8");
-      console.log(`${profile.name} run ${run}: ${JSON.stringify({ scores, metrics })}`);
     }
 
     runs.sort((a, b) => a.scores.performance - b.scores.performance);
