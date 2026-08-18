@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
 import { allSections, getSection, dogsInSection, plural, TOTAL_DOGS } from "@/lib/data";
 import DogCard from "@/components/DogCard";

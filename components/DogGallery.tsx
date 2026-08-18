@@ -2,8 +2,9 @@
 
 import { useRef, useState } from "react";
 import { IconChevron } from "./Icons";
+import DogImage from "./DogImage";
 
-export default function DogGallery({ images, alt }: { images: string[]; alt: string }) {
+export default function DogGallery({ images, alt, slug }: { images: string[]; alt: string; slug: string }) {
   const [i, setI] = useState(0);
   const startX = useRef(0);
   const delta = useRef(0);
@@ -21,7 +22,11 @@ export default function DogGallery({ images, alt }: { images: string[]; alt: str
       >
         {images.map((src, k) => (
           <div className="doggal__slide" key={src}>
-            <img src={src} alt={k === 0 ? alt : `${alt} — фото ${k + 1}`} loading={k === 0 ? "eager" : "lazy"} width={1200} height={1200} decoding="async" />
+            {k === 0 ? (
+              <DogImage slug={slug} alt={alt} loading="eager" fetchPriority="high" sizes="(max-width: 900px) 100vw, 58vw" />
+            ) : (
+              <img src={src} alt={`${alt} — фото ${k + 1}`} loading="lazy" width={1200} height={1200} decoding="async" />
+            )}
           </div>
         ))}
       </div>

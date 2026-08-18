@@ -9,9 +9,15 @@ export const SITE = {
   phoneHref: "+74951336556",
   parkUrl: "https://parkskazka.com/",
   ticketsUrl: "https://prices.parkskazka.com/",
-  metrikaId: "108579634",
-  // Отдельный счётчик для haski.parkskazka.ru (добавлен 2026-06-11)
-  metrikaIdHaski: "109784590",
+  officialHuskyUrl: "https://parkskazka.com/places/husky/",
+  officialContactsUrl: "https://parkskazka.com/kontakty/",
+  officialFaqUrl: "https://parkskazka.com/faq/",
+  address: "Москва, ул. Крылатская, 18",
+  email: "info@parkskazka.com",
+  parkHoursRegular: "Пн–Чт, Вс: 10:00–22:00",
+  parkHoursWeekend: "Пт–Сб: 10:00–23:00",
+  // Оба счётчика подтверждены владельцем 2026-08-17. tag.js загружается один раз.
+  metrikaIds: ["108579634", "109784590"],
 } as const;
 
 // Изображения уже лежат на боевом домене (тот же домен после катовера).

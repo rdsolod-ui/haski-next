@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  createContext, useContext, useEffect, useState, useCallback, type ReactNode,
+  createContext, useContext, useEffect, useState, useCallback, useRef, type ReactNode,
 } from "react";
-import Link from "next/link";
+import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
 import { IconClose, IconHeart, IconTicket, IconArrow } from "./Icons";
 
@@ -22,6 +22,7 @@ interface Ctx {
 
 const FavCtx = createContext<Ctx | null>(null);
 const KEY = "haski_favorites";
+type MetrikaWindow = Window & { ym?: (id: number, method: string, goal: string) => void };
 
 export function useFavorites() {
   const ctx = useContext(FavCtx);
@@ -33,13 +34,21 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
   const [items, setItems] = useState<FavItem[]>([]);
   const [isOpen, setOpen] = useState(false);
   const [ready, setReady] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setItems(JSON.parse(raw));
-    } catch {}
-    setReady(true);
+    let active = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (raw) setItems(JSON.parse(raw));
+      } catch {}
+      setReady(true);
+    });
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
@@ -57,10 +66,41 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || !panelRef.current) return;
+      const focusable = Array.from(
+        panelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+      openerRef.current?.focus();
+    };
   }, [isOpen]);
 
   const has = useCallback((slug: string) => items.some((i) => i.slug === slug), [items]);
@@ -71,13 +111,17 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
         : [item, ...prev]
     );
     try {
-      const id = SITE.metrikaId;
-      // @ts-expect-error ym global
-      if (typeof window.ym === "function") window.ym(Number(id), "reachGoal", "favorite");
+      const ym = (window as MetrikaWindow).ym;
+      if (typeof ym === "function") {
+        for (const id of SITE.metrikaIds) ym(Number(id), "reachGoal", "favorite");
+      }
     } catch {}
   }, []);
   const remove = useCallback((slug: string) => setItems((p) => p.filter((i) => i.slug !== slug)), []);
-  const open = useCallback(() => setOpen(true), []);
+  const open = useCallback(() => {
+    openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setOpen(true);
+  }, []);
   const close = useCallback(() => setOpen(false), []);
 
   return (
@@ -85,17 +129,17 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
       {children}
       <div className={`favdrawer ${isOpen ? "is-open" : ""}`} aria-hidden={!isOpen}>
         <div className="favdrawer__backdrop" onClick={close} />
-        <aside className="favdrawer__panel" role="dialog" aria-modal="true" aria-label="Избранные собаки">
+        <aside ref={panelRef} className="favdrawer__panel" role="dialog" aria-modal="true" aria-labelledby="favorites-title">
           <header className="favdrawer__head">
             <div>
-              <p className="favdrawer__title">Избранное</p>
+              <p className="favdrawer__title" id="favorites-title">Избранное</p>
               <p className="favdrawer__sub">
                 {items.length
                   ? `${items.length} ${plural(items.length, "любимец", "любимца", "любимцев")} — сохранено в этом браузере`
                   : "Сохраняется только на этом устройстве"}
               </p>
             </div>
-            <button className="favdrawer__close" onClick={close} aria-label="Закрыть"><IconClose /></button>
+            <button ref={closeRef} className="favdrawer__close" onClick={close} aria-label="Закрыть избранное"><IconClose /></button>
           </header>
 
           <div className="favdrawer__body">
@@ -111,18 +155,20 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
             ) : (
               <div className="favdrawer__list">
                 {items.map((it) => (
-                  <Link key={it.slug} href={it.url} className="favrow" onClick={close} data-analytics="open-dog">
-                    <span className="favrow__media">{it.img ? <img src={it.img} alt={it.name} loading="lazy" /> : null}</span>
-                    <span className="favrow__info">
-                      <span className="favrow__name">{it.name}</span>
-                      {it.breed ? <span className="favrow__breed">{it.breed}</span> : null}
-                    </span>
+                  <div key={it.slug} className="favrow">
+                    <Link href={it.url} className="favrow__link" onClick={close} data-analytics="open-dog">
+                      <span className="favrow__media">{it.img ? <img src={it.img} alt="" loading="lazy" width={60} height={60} /> : null}</span>
+                      <span className="favrow__info">
+                        <span className="favrow__name">{it.name}</span>
+                        {it.breed ? <span className="favrow__breed">{it.breed}</span> : null}
+                      </span>
+                    </Link>
                     <button
                       className="favrow__remove"
                       aria-label={`Убрать ${it.name}`}
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); remove(it.slug); }}
                     ><IconClose /></button>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}

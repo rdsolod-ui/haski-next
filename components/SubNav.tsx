@@ -29,7 +29,7 @@ export default function SubNav({
   }, [on]);
 
   return (
-    <div className={`subnav ${on ? "is-on" : ""}`} aria-hidden={!on}>
+    <div className={`subnav ${on ? "is-on" : ""}`} aria-hidden={!on} inert={!on}>
       <div className="subnav__pill glass">
         <span className="subnav__title">{title}</span>
         {anchors.length ? (

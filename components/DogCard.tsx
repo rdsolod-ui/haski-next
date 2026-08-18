@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { coverUrl, dogSlug, type Dog } from "@/lib/data";
+import Link from "@/components/StaticLink";
+import { dogSlug, type Dog } from "@/lib/data";
+import DogImage, { localDogCover } from "./DogImage";
 import FavButton from "./FavButton";
 import { IconArrowUpRight } from "./Icons";
 
 export default function DogCard({ dog, priority = false }: { dog: Dog; priority?: boolean }) {
   const slug = dogSlug(dog);
   const url = `/dogs/${slug}`;
-  const cover = coverUrl(dog);
   const breed = dog.breed_species || dog.family || dog.name_latin || "";
   const teaser = dog.card_teaser || dog.hero_text || "";
 
@@ -14,13 +14,12 @@ export default function DogCard({ dog, priority = false }: { dog: Dog; priority?
     <article className="dogcard">
       <Link href={url} className="dogcard__link" data-analytics="open-dog">
         <div className="dogcard__media">
-          <img
-            src={cover}
+          <DogImage
+            slug={slug}
             alt={dog.image_alt || dog.name_ru}
             loading={priority ? "eager" : "lazy"}
-            width={900}
-            height={900}
-            decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
+            sizes="(max-width: 640px) 92vw, (max-width: 1100px) 45vw, 280px"
           />
           {dog.listing_badge ? <span className="dogcard__badge">{dog.listing_badge}</span> : null}
           <span className="dogcard__open"><IconArrowUpRight /></span>
@@ -31,7 +30,7 @@ export default function DogCard({ dog, priority = false }: { dog: Dog; priority?
           {teaser ? <p className="dogcard__teaser">{teaser}</p> : null}
         </div>
       </Link>
-      <FavButton item={{ slug, name: dog.name_ru, breed, img: cover, url }} />
+      <FavButton item={{ slug, name: dog.name_ru, breed, img: localDogCover(slug, 480), url }} />
     </article>
   );
 }
