@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
 import { allDogs, allSections, getDog, dogSlug, TOTAL_DOGS, TOTAL_SECTIONS } from "@/lib/data";
@@ -7,6 +8,12 @@ import DogCard from "@/components/DogCard";
 import SectionCard from "@/components/SectionCard";
 import JsonLd from "@/components/JsonLd";
 import { IconArrow, IconPaw, IconTicket, IconSearch, IconHeart, IconSparkle, IconMountain } from "@/components/Icons";
+
+export const metadata: Metadata = {
+  verification: {
+    yandex: "1548cae7d5e0f979",
+  },
+};
 
 const FEATURED = ["adel", "bolt", "emmi", "yuki", "lord", "chelsi", "puma"];
 
