@@ -33,12 +33,12 @@ test.describe("static release contract", () => {
   });
 
   test("current ticket CTA and both Metrika counters are retained", async ({ page }) => {
-    let tagRequests = 0;
-    await page.route("https://mc.yandex.ru/metrika/tag.js", async (route) => {
-      tagRequests += 1;
+    const tagRequests: string[] = [];
+    await page.route(/https:\/\/mc\.yandex\.ru\/metrika\/tag\.js\?id=\d+/, async (route) => {
+      tagRequests.push(route.request().url());
       await route.fulfill({
         contentType: "application/javascript",
-        body: "window.__ymCalls=(window.ym&&window.ym.a)||[];window.ym=(...args)=>window.__ymCalls.push(args);",
+        body: "window.__ymCalls=window.__ymCalls||(window.ym&&window.ym.a)||[];window.ym=(...args)=>window.__ymCalls.push(args);",
       });
     });
     await page.goto("/");
@@ -48,11 +48,29 @@ test.describe("static release contract", () => {
     const ticket = page.getByRole("link", { name: "Купить билет", exact: true }).first();
     await expect(ticket).toHaveAttribute("href", "https://prices.parkskazka.com/");
     await expect.poll(() => page.evaluate(() => (window as typeof window & { __ymCalls?: unknown[] }).__ymCalls?.length ?? 0)).toBe(2);
-    const ids = await page.evaluate(() =>
-      ((window as typeof window & { __ymCalls?: unknown[][] }).__ymCalls ?? []).map((call) => call[0]),
+    const calls = await page.evaluate(() =>
+      (window as typeof window & { __ymCalls?: unknown[][] }).__ymCalls ?? [],
     );
-    expect(ids).toEqual([108579634, 109784590]);
-    expect(tagRequests).toBe(1);
+    expect(calls.map((call) => call[0])).toEqual([109784590, 108579634]);
+    expect(calls[0][2]).toMatchObject({
+      ssr: true,
+      webvisor: true,
+      clickmap: true,
+      ecommerce: "dataLayer",
+      accurateTrackBounce: true,
+      trackLinks: true,
+    });
+    expect(calls[1][2]).toMatchObject({
+      ssr: true,
+      webvisor: false,
+      clickmap: true,
+      accurateTrackBounce: true,
+      trackLinks: true,
+    });
+    expect(tagRequests.sort()).toEqual([
+      "https://mc.yandex.ru/metrika/tag.js?id=108579634",
+      "https://mc.yandex.ru/metrika/tag.js?id=109784590",
+    ]);
   });
 
   test("catalog opens with all 30 uncropped animal cards", async ({ page }) => {
