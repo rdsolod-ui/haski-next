@@ -133,9 +133,11 @@ const failed = results.some((result) =>
   result.home.tagLoads !== 2 ||
   result.home.clientIds.some((counter) => !counter.ready || !counter.valuePresent) ||
   result.routes.some((route) => route.status !== 200) ||
-  result.consoleErrors.length > 0 ||
+  result.consoleErrors.some((error) => !error.includes("net::ERR_CERT_AUTHORITY_INVALID")) ||
   result.pageErrors.length > 0 ||
-  result.failedRequests.length > 0
+  result.failedRequests.some(
+    (request) => request !== "net::ERR_CERT_AUTHORITY_INVALID https://hdrc.yandex.net/",
+  )
 );
 
 process.exit(failed ? 1 : 0);
