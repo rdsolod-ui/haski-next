@@ -54,6 +54,24 @@ try {
     await page.waitForTimeout(250);
 
     const homeHTML = await page.content();
+    const clientIds = await page.evaluate(async () => {
+      const probe = (id) => new Promise((resolve) => {
+        let settled = false;
+        window.ym(id, "getClientID", (value) => {
+          if (!settled) {
+            settled = true;
+            resolve({ id, ready: true, valuePresent: typeof value === "string" && value.length > 0 });
+          }
+        });
+        window.setTimeout(() => {
+          if (!settled) {
+            settled = true;
+            resolve({ id, ready: false, valuePresent: false });
+          }
+        }, 5000);
+      });
+      return Promise.all([probe(108579634), probe(109784590)]);
+    });
     const cta = page.getByRole("link", { name: "Купить билет", exact: true }).first();
     const dogLink = page.locator('a[href="/dogs/adel"]').first();
     const homeChecks = {
@@ -67,6 +85,7 @@ try {
       tagLoads: metrikaRequests.filter((url) => url.includes("/metrika/tag.js")).length,
       counterHits108579634: metrikaRequests.filter((url) => url.includes("108579634")).length,
       counterHits109784590: metrikaRequests.filter((url) => url.includes("109784590")).length,
+      clientIds,
       metrikaState: await page.evaluate(() => ({
         initialized: window.__haskiMetrikaInitialized === true,
         ready: window.__haskiMetrikaReady === true,
@@ -111,7 +130,8 @@ const failed = results.some((result) =>
   !result.home.dogLinkVisible ||
   !result.home.counter108579634 ||
   !result.home.counter109784590 ||
-  result.home.tagLoads !== 1 ||
+  result.home.tagLoads !== 2 ||
+  result.home.clientIds.some((counter) => !counter.ready || !counter.valuePresent) ||
   result.routes.some((route) => route.status !== 200) ||
   result.consoleErrors.length > 0 ||
   result.pageErrors.length > 0 ||

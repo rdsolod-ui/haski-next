@@ -20,6 +20,17 @@ if (yandexVerificationMatches.length !== 1) {
   );
 }
 
+for (const counterId of ["108579634", "109784590"]) {
+  const noscriptMatches = homeHtml.match(
+    new RegExp(`<img[^>]+src="https://mc\\.yandex\\.ru/watch/${counterId}"[^>]*>`, "g"),
+  ) ?? [];
+  if (noscriptMatches.length !== 1) {
+    throw new Error(
+      `Expected exactly one no-JS fallback for Metrika counter ${counterId}, found ${noscriptMatches.length}.`,
+    );
+  }
+}
+
 const expectedDogPaths = contract.paths.filter((route) => route.startsWith("/dogs/"));
 const currentDogPaths = dogsData.dogs.map((dog) => `/dogs/${dog.slug || dog.id}`);
 const expectedSectionPaths = contract.paths.filter((route) => route.startsWith("/sections/"));
