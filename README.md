@@ -8,6 +8,8 @@
 - 30 адресов `/dogs/<slug>` закреплены напечатанными QR-кодами на вольерах. Их нельзя переименовывать или удалять без отдельного решения владельца и redirect map.
 - CTA остаётся «Купить билет» и ведёт на `https://prices.parkskazka.com/`.
 - Яндекс.Метрика загружает отдельный SSR-тег для каждого подтверждённого счётчика: `108579634` и `109784590`; Вебвизор и Ecommerce `dataLayer` включены только для `109784590`.
+- `/search` остаётся функциональным URL с `noindex,follow` и canonical на `/dogs`; sitemap содержит 43 индексируемых canonical URL.
+- Продуктовые цели обоих счётчиков описаны в `docs/analytics-goals.md` и защищены browser-тестом от дублей.
 
 Контракт маршрутов хранится в `tests/contracts/legacy-routes.json` и проверяется после каждой сборки.
 
@@ -18,6 +20,7 @@
 ```bash
 npm ci
 npm run lint
+npm run test:content
 npm run build
 npm run test:routes
 npm run test:e2e
@@ -34,7 +37,7 @@ node scripts/generate-responsive-media.mjs
 
 ## CI и выпуск
 
-GitHub Actions выполняет lint, production build, проверку 39 исторических URL, browser acceptance в Chromium/WebKit, Lighthouse mobile/desktop и публикует проверенный `out/` как artifact. Dependency tree должен проходить `npm audit` без уязвимостей.
+GitHub Actions выполняет lint, editorial content gate, production build, проверку 39 исторических URL, browser acceptance в Chromium/WebKit, Lighthouse mobile/desktop и публикует проверенный `out/` как artifact. Dependency tree должен проходить `npm audit` без уязвимостей.
 
 Production-схема:
 

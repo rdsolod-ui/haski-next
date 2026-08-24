@@ -6,8 +6,8 @@
 
 ## Сборка
 ```bash
-npm install
-npm run build       # → out/ (44 страницы: /, /search, /sections, 6 разделов, 30 собак, 404, sitemap, robots)
+npm ci
+npm run build       # → out/ (49 статических страниц/маршрутов, включая 30 неизменяемых профилей собак)
 ```
 
 ## Локальный просмотр
@@ -50,7 +50,8 @@ server {
 Сейчас прод (`/var/www/haski.parkskazka.ru`, PHP) **не тронут**. Переключение:
 1. Залить `out/` на сервер (например `/var/www/haski-next/out`).
 2. Сверить SEO-паритет: все URL `/`, `/search`, `/sections/<slug>`, `/dogs/<slug>`
-   отдают 200; `sitemap.xml`/`robots.txt` на месте; canonical/OG/JSON-LD совпадают.
+   отдают 200; `/search` имеет `noindex,follow` и отсутствует в sitemap; `sitemap.xml`
+   содержит 43 canonical URL, `robots.txt`, canonical/OG/JSON-LD совпадают.
 3. Переключить `root` nginx на новую папку (или симлинк) и `nginx -s reload`.
 4. Откат — вернуть `root` на PHP-проект (мгновенно).
 

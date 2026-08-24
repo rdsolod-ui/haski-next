@@ -73,6 +73,76 @@ test.describe("static release contract", () => {
     ]);
   });
 
+  test("product goals are sent once per interaction to both Metrika counters", async ({ page }) => {
+    await page.route(/https:\/\/mc\.yandex\.ru\/metrika\/tag\.js\?id=\d+/, async (route) => {
+      await route.fulfill({
+        contentType: "application/javascript",
+        body: "window.__ymCalls=window.__ymCalls||(window.ym&&window.ym.a)||[];window.ym=(...args)=>window.__ymCalls.push(args);",
+      });
+    });
+
+    const startMetrika = async () => {
+      await expect.poll(() => page.evaluate(() =>
+        Boolean((window as typeof window & { __haskiMetrikaReady?: boolean }).__haskiMetrikaReady),
+      )).toBe(true);
+      await page.evaluate(() => window.dispatchEvent(new Event("pointerdown")));
+      await expect.poll(() => page.evaluate(() =>
+        (window as typeof window & { __ymCalls?: unknown[] }).__ymCalls?.length ?? 0,
+      )).toBeGreaterThanOrEqual(2);
+    };
+    const goalNames = () => page.evaluate(() =>
+      ((window as typeof window & { __ymCalls?: unknown[][] }).__ymCalls ?? [])
+        .filter((call) => call[1] === "reachGoal")
+        .map((call) => call[2]),
+    );
+    const clickWithoutNavigation = async (selector: string) => {
+      await page.locator(selector).first().evaluate((element) => {
+        element.addEventListener("click", (event) => event.preventDefault(), { once: true });
+        (element as HTMLElement).click();
+      });
+    };
+
+    await page.goto("/dogs");
+    await startMetrika();
+    await clickWithoutNavigation('[data-analytics="buy-ticket"]');
+    await clickWithoutNavigation('[data-analytics="open-dog"]');
+    await page.locator(".dogcard .favbtn").first().click();
+    await page.locator(".dogcard .favbtn").first().click();
+    await expect.poll(goalNames).toEqual([
+      "ticket", "ticket",
+      "dog_open", "dog_open",
+      "favorite_add", "favorite_add",
+      "favorite_remove", "favorite_remove",
+    ]);
+
+    await page.goto("/sections");
+    await startMetrika();
+    await clickWithoutNavigation('[data-analytics="open-section"]');
+    await expect.poll(goalNames).toEqual(["section_open", "section_open"]);
+
+    await page.goto("/search");
+    await startMetrika();
+    await page.getByRole("searchbox", { name: "Поиск собак" }).fill("Адель");
+    await expect.poll(goalNames, { timeout: 3_000 }).toEqual(["search", "search"]);
+    await page.getByRole("button", { name: "Хаски", exact: true }).click();
+    await expect.poll(goalNames).toEqual(["search", "search", "filter", "filter"]);
+  });
+
+  test("search stays functional but is excluded from indexing signals", async ({ page, request }) => {
+    await page.goto("/search");
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /follow/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://haski.parkskazka.ru/dogs");
+
+    const sitemap = await (await request.get("/sitemap.xml")).text();
+    expect(sitemap).not.toContain("https://haski.parkskazka.ru/search");
+    expect(sitemap.match(/<loc>/g)).toHaveLength(43);
+
+    await page.goto("/dogs/adel");
+    await expect(page.locator('.crumbs a[href="/dogs"]')).toHaveText("Каталог");
+    await expect(page.locator('.crumbs a[href="/search"]')).toHaveCount(0);
+  });
+
   test("catalog opens with all 30 uncropped animal cards", async ({ page }) => {
     await page.goto("/dogs", { waitUntil: "networkidle" });
     await expect(page.locator(".dogcard")).toHaveCount(30);
@@ -85,7 +155,6 @@ test.describe("static release contract", () => {
     for (const route of ["/", "/visit", "/dogs/adel", "/search"]) {
       await page.goto(route);
       const results = await new AxeBuilder({ page })
-        .disableRules(["color-contrast"])
         .analyze();
       expect(
         results.violations.filter((violation) => ["critical", "serious"].includes(violation.impact ?? "")),

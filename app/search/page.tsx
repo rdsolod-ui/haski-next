@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Поиск собак Хаски Лэнд — каталог хаски, маламутов, самоедов",
   description:
     "Каталог собак Хаски Лэнд: ищите по кличке, породе, окрасу и характеру. Хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели Парка Сказка.",
+  robots: { index: false, follow: true },
   alternates: { canonical: "/dogs" },
   openGraph: { title: "Поиск собак Хаски Лэнд", url: SITE.baseUrl + "/dogs" },
 };

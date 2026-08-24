@@ -33,6 +33,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Enforce editorial content quality
+        run: npm run test:content
+
       - name: Build static export
         run: npm run build
 

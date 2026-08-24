@@ -79,7 +79,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Главная", item: SITE.baseUrl + "/" },
-        { "@type": "ListItem", position: 2, name: "Поиск собак", item: SITE.baseUrl + "/search" },
+        { "@type": "ListItem", position: 2, name: "Каталог собак", item: SITE.baseUrl + "/dogs" },
         ...(section ? [{ "@type": "ListItem", position: 3, name: section.name, item: `${SITE.baseUrl}/sections/${section.slug}` }] : []),
         { "@type": "ListItem", position: section ? 4 : 3, name: dog.name_ru },
       ],
@@ -92,7 +92,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
       <SubNav title={dog.name_ru} buyHref={SITE.ticketsUrl} buyText="Купить билет" anchors={subAnchors} />
       <nav className="crumbs" aria-label="Хлебные крошки">
         <Link href="/">Главная</Link><span>/</span>
-        <Link href="/search">Поиск</Link><span>/</span>
+        <Link href="/dogs">Каталог</Link><span>/</span>
         {section ? (<><Link href={`/sections/${section.slug}`}>{section.name}</Link><span>/</span></>) : null}
         <span aria-current="page">{dog.name_ru}</span>
       </nav>
@@ -124,7 +124,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
 
           <div className="dogpage__actions">
             <a className="btn btn--cta" href={SITE.ticketsUrl} target="_blank" rel="noopener noreferrer" data-analytics="buy-ticket">
-              {dog.cta_text || "Купить билет"} <span className="btn__ic"><IconTicket /></span>
+              Купить билет <span className="btn__ic"><IconTicket /></span>
             </a>
             <FavButton item={favItem} variant="hero" />
           </div>
@@ -250,7 +250,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
               <p className="section-no">Следом по маршруту</p>
               <h2 className="h2">Кто может понравиться ещё</h2>
             </div>
-            <Link href="/search" className="seccard__go">Весь каталог <IconArrow /></Link>
+            <Link href="/dogs" className="seccard__go">Весь каталог <IconArrow /></Link>
           </div>
           <div className="grid-cards">
             {related.map((d, i) => <Reveal key={d.id} delay={(i % 4) * 60}><DogCard dog={d} /></Reveal>)}
@@ -298,7 +298,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
         </div>
       </section>
 
-      <StickyCTA item={favItem} ticketHref={SITE.ticketsUrl} ticketText={dog.cta_text || "Купить билет"} />
+      <StickyCTA item={favItem} ticketHref={SITE.ticketsUrl} ticketText="Купить билет" />
     </div>
   );
 }

@@ -16,7 +16,7 @@ export const SITE = {
   email: "info@parkskazka.com",
   parkHoursRegular: "Пн–Чт, Вс: 10:00–22:00",
   parkHoursWeekend: "Пт–Сб: 10:00–23:00",
-  // Оба счётчика подтверждены владельцем 2026-08-17. tag.js загружается один раз.
+  // Оба счётчика подтверждены владельцем 2026-08-17 и используют отдельные SSR tag.js?id=... URL.
   metrikaIds: ["108579634", "109784590"],
 } as const;
 

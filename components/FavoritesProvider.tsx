@@ -5,6 +5,7 @@ import {
 } from "react";
 import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
+import { ANALYTICS_GOALS, trackGoal } from "@/lib/analytics";
 import { IconClose, IconHeart, IconTicket, IconArrow } from "./Icons";
 
 export interface FavItem { slug: string; name: string; breed?: string; img?: string; url: string }
@@ -22,8 +23,6 @@ interface Ctx {
 
 const FavCtx = createContext<Ctx | null>(null);
 const KEY = "haski_favorites";
-type MetrikaWindow = Window & { ym?: (id: number, method: string, goal: string) => void };
-
 function persistItems(items: FavItem[]) {
   try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {}
 }
@@ -105,6 +104,7 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
 
   const has = useCallback((slug: string) => items.some((i) => i.slug === slug), [items]);
   const toggle = useCallback((item: FavItem) => {
+    const isRemoving = items.some((current) => current.slug === item.slug);
     setItems((prev) => {
       const next = prev.some((i) => i.slug === item.slug)
         ? prev.filter((i) => i.slug !== item.slug)
@@ -112,18 +112,18 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
       persistItems(next);
       return next;
     });
-    try {
-      const ym = (window as MetrikaWindow).ym;
-      if (typeof ym === "function") {
-        for (const id of SITE.metrikaIds) ym(Number(id), "reachGoal", "favorite");
-      }
-    } catch {}
+    trackGoal(isRemoving ? ANALYTICS_GOALS.favoriteRemove : ANALYTICS_GOALS.favoriteAdd, {
+      dog_slug: item.slug,
+    });
+  }, [items]);
+  const remove = useCallback((slug: string) => {
+    setItems((prev) => {
+      const next = prev.filter((item) => item.slug !== slug);
+      persistItems(next);
+      return next;
+    });
+    trackGoal(ANALYTICS_GOALS.favoriteRemove, { dog_slug: slug });
   }, []);
-  const remove = useCallback((slug: string) => setItems((prev) => {
-    const next = prev.filter((item) => item.slug !== slug);
-    persistItems(next);
-    return next;
-  }), []);
   const open = useCallback(() => {
     openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setOpen(true);
@@ -162,7 +162,7 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
               <div className="favdrawer__list">
                 {items.map((it) => (
                   <div key={it.slug} className="favrow">
-                    <Link href={it.url} className="favrow__link" onClick={close} data-analytics="open-dog">
+                    <Link href={it.url} className="favrow__link" onClick={close} data-analytics="open-dog" data-analytics-slug={it.slug}>
                       <span className="favrow__media">{it.img ? <img src={it.img} alt="" loading="lazy" width={60} height={60} /> : null}</span>
                       <span className="favrow__info">
                         <span className="favrow__name">{it.name}</span>

@@ -52,7 +52,7 @@ assertSameSet("Section URL", expectedSectionPaths, currentSectionPaths);
 
 for (const route of contract.paths) {
   const absoluteUrl = `${contract.baseUrl}${route}`;
-  if (!sitemap.includes(`<loc>${absoluteUrl}</loc>`)) {
+  if (route !== "/search" && !sitemap.includes(`<loc>${absoluteUrl}</loc>`)) {
     throw new Error(`Legacy URL is missing from sitemap: ${absoluteUrl}`);
   }
 
@@ -60,6 +60,14 @@ for (const route of contract.paths) {
   await stat(path.join(root, "out", outputFile)).catch(() => {
     throw new Error(`Legacy URL has no static HTML artifact: ${route} (${outputFile})`);
   });
+}
+
+if (sitemap.includes(`<loc>${contract.baseUrl}/search</loc>`)) {
+  throw new Error("Functional /search route must be excluded from the indexable sitemap.");
+}
+const sitemapUrls = sitemap.match(/<loc>[^<]+<\/loc>/g) ?? [];
+if (sitemapUrls.length !== 43) {
+  throw new Error(`Expected 43 canonical sitemap URLs, found ${sitemapUrls.length}.`);
 }
 
 console.log(
