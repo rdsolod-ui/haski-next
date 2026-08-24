@@ -262,6 +262,14 @@ body {
 .crumbs { color: #6f7d7b; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
 .pagehero { max-width: 1120px; gap: 24px; padding-block: clamp(28px, 4vw, 64px) clamp(44px, 6vw, 90px); border-bottom: 1px solid var(--line); }
 .pagehero::before { content: attr(data-index); color: var(--brand); font-size: .7rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.crumbs { color: #c7d0cf; }
+.crumbs a { color: #dfe5e4; }
+.crumbs > span { opacity: 1; }
+.crumbs > span:not([aria-current]) { color: #74817f; }
+.crumbs [aria-current] { color: #c7d0cf; }
+.seccard__go { color: #96f3e4; }
+.panel-v2--frost .seccard__go,
+.panel-v2--frost .text-link { color: #17695d; }
 .pagehero .h1 { max-width: 12ch; text-transform: uppercase; }
 .pagehero .lead { max-width: 52ch; color: #aeb9b7; }
 .grid-cards { grid-template-columns: repeat(12, 1fr); gap: clamp(14px, 1.6vw, 24px); }

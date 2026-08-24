@@ -12,7 +12,7 @@ export default function DogCard({ dog, priority = false, variant = "standard", i
 
   return (
     <article className={`dogcard dogcard--${variant}`}>
-      <Link href={url} className="dogcard__link" data-analytics="open-dog">
+      <Link href={url} className="dogcard__link" data-analytics="open-dog" data-analytics-slug={slug}>
         <div className="dogcard__media">
           <DogImage
             slug={slug}

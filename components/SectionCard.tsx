@@ -7,7 +7,7 @@ export default function SectionCard({ section }: { section: Section }) {
   const count = section.count;
   const label = `${count} ${plural(count, "профиль", "профиля", "профилей")}`;
   return (
-    <Link href={`/sections/${section.slug}`} className="seccard" data-analytics="open-section">
+    <Link href={`/sections/${section.slug}`} className="seccard" data-analytics="open-section" data-analytics-section={section.slug}>
       <div className="seccard__media">
         {section.coverSlug ? (
           <DogImage slug={section.coverSlug} alt={section.name} sizes="(max-width: 700px) 92vw, 360px" />

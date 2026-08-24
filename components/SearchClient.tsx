@@ -1,16 +1,18 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { searchDogs, allSections, allDogs, plural, type Dog } from "@/lib/data";
 import DogCard from "./DogCard";
 import { IconSearch, IconClose, IconPaw } from "./Icons";
+import { ANALYTICS_GOALS, trackGoal } from "@/lib/analytics";
 
 export default function SearchClient() {
   const params = useSearchParams();
   const sections = useMemo(() => allSections(), []);
   const [query, setQuery] = useState(() => params.get("q") ?? "");
   const [section, setSection] = useState(() => params.get("section") ?? "");
+  const lastTrackedSearch = useRef("");
 
   // держим URL в синхроне (deep-link/назад), без перерисовки роутера
   useEffect(() => {
@@ -27,6 +29,36 @@ export default function SearchClient() {
   );
   const total = allDogs().length;
 
+  useEffect(() => {
+    const normalized = query.trim().toLocaleLowerCase("ru-RU");
+    if (normalized.length < 2) return;
+    const signature = `${normalized}|${section}`;
+    const timer = window.setTimeout(() => {
+      if (lastTrackedSearch.current === signature) return;
+      lastTrackedSearch.current = signature;
+      trackGoal(ANALYTICS_GOALS.search, {
+        query: normalized,
+        section_slug: section || "all",
+        result_count: results.length,
+      });
+    }, 800);
+    return () => window.clearTimeout(timer);
+  }, [query, section, results.length]);
+
+  const chooseSection = (nextSection: string) => {
+    setSection(nextSection);
+    trackGoal(ANALYTICS_GOALS.filter, {
+      section_slug: nextSection || "all",
+      action: "select",
+    });
+  };
+
+  const resetFilters = () => {
+    setQuery("");
+    setSection("");
+    trackGoal(ANALYTICS_GOALS.filter, { section_slug: "all", action: "reset" });
+  };
+
   return (
     <div className="searchui">
       <div className="searchui__bar bezel">
@@ -41,7 +73,6 @@ export default function SearchClient() {
             placeholder="Найдите по имени, породе или характеру"
             aria-label="Поиск собак"
             autoComplete="off"
-            data-analytics="search"
           />
           {query ? (
             <button className="searchui__clear" onClick={() => setQuery("")} aria-label="Очистить"><IconClose /></button>
@@ -50,9 +81,9 @@ export default function SearchClient() {
       </div>
 
       <div className="searchui__chips" role="group" aria-label="Разделы">
-        <button className={`chip ${section === "" ? "is-active" : ""}`} onClick={() => setSection("")} data-analytics="filter">Все разделы</button>
+        <button className={`chip ${section === "" ? "is-active" : ""}`} onClick={() => chooseSection("")}>Все разделы</button>
         {sections.map((s) => (
-          <button key={s.slug} className={`chip ${section === s.slug ? "is-active" : ""}`} onClick={() => setSection(s.slug)} data-analytics="filter">
+          <button key={s.slug} className={`chip ${section === s.slug ? "is-active" : ""}`} onClick={() => chooseSection(s.slug)}>
             {s.short_name || s.name}
           </button>
         ))}
@@ -63,7 +94,7 @@ export default function SearchClient() {
           <p className="section-no">Атлас / {results.length} из {total}</p>
           <h2 className="h2">{results.length ? (results.length === total ? "Вся стая" : `Найдено: ${results.length}`) : "Следов не найдено"}</h2>
         </div>
-        {(query || section) ? <button className="btn btn--ghost" onClick={() => { setQuery(""); setSection(""); }} data-analytics="filter">Сбросить</button> : null}
+        {(query || section) ? <button className="btn btn--ghost" onClick={resetFilters}>Сбросить</button> : null}
       </div>
 
       {results.length ? (
