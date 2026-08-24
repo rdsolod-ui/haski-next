@@ -101,13 +101,16 @@ test.describe("static release contract", () => {
         (element as HTMLElement).click();
       });
     };
+    const clickDom = async (selector: string) => {
+      await page.locator(selector).first().evaluate((element) => (element as HTMLElement).click());
+    };
 
     await page.goto("/dogs");
     await startMetrika();
     await clickWithoutNavigation('[data-analytics="buy-ticket"]');
     await clickWithoutNavigation('[data-analytics="open-dog"]');
-    await page.locator(".dogcard .favbtn").first().click();
-    await page.locator(".dogcard .favbtn").first().click();
+    await clickDom(".dogcard .favbtn");
+    await clickDom(".dogcard .favbtn");
     await expect.poll(goalNames).toEqual([
       "ticket", "ticket",
       "dog_open", "dog_open",
