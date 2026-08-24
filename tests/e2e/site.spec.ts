@@ -55,6 +55,14 @@ test.describe("static release contract", () => {
     expect(tagRequests).toBe(1);
   });
 
+  test("catalog opens with all 30 uncropped animal cards", async ({ page }) => {
+    await page.goto("/dogs", { waitUntil: "networkidle" });
+    await expect(page.locator(".dogcard")).toHaveCount(30);
+    const media = page.locator(".dogcard__media img").first();
+    await expect(media).toBeVisible();
+    expect(await media.evaluate((image) => getComputedStyle(image).objectFit)).toBe("contain");
+  });
+
   test("core pages have no serious automated accessibility violations", async ({ page }) => {
     for (const route of ["/", "/visit", "/dogs/adel", "/search"]) {
       await page.goto(route);
@@ -72,9 +80,9 @@ test.describe("static release contract", () => {
 test("no-JS visitors see the complete hero and dog links", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:4173/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Северная сказка");
-  await expect(page.locator('a[href="/dogs/adel"]')).toBeVisible();
+  await page.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Найдите своего");
+  await expect(page.locator('a[href="/dogs/adel"]').first()).toBeVisible();
   await context.close();
 });
 

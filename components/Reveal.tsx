@@ -1,15 +1,13 @@
-"use client";
+import type { ReactNode, ElementType, CSSProperties } from "react";
 
-import { useLayoutEffect, useRef, type ReactNode, type ElementType, type CSSProperties } from "react";
+export type RevealVariant = "rise" | "clip" | "scale" | "left" | "right" | "soft";
 
-/**
- * Progressive enhancement: content is visible in HTML and remains visible
- * without JavaScript, IntersectionObserver, or when the bundle fails.
- */
+/** Server-rendered motion marker. Content is never hidden until PageMotion enhances it. */
 export default function Reveal({
   children,
   as: Tag = "div",
   delay = 0,
+  variant = "rise",
   className = "",
   style,
   ...rest
@@ -17,51 +15,11 @@ export default function Reveal({
   children: ReactNode;
   as?: ElementType;
   delay?: number;
+  variant?: RevealVariant;
   className?: string;
   style?: CSSProperties;
   [key: string]: unknown;
 }) {
-  const ref = useRef<HTMLElement | null>(null);
-
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      !("IntersectionObserver" in window)
-    ) {
-      return;
-    }
-
-    const bounds = el.getBoundingClientRect();
-    if (bounds.top < window.innerHeight * 0.96 && bounds.bottom > 0) return;
-
-    let io: IntersectionObserver | undefined;
-    try {
-      el.style.transitionDelay = `${delay}ms`;
-      el.classList.add("is-reveal-ready");
-      io = new IntersectionObserver(
-        (entries, observer) => {
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            entry.target.classList.add("in");
-            observer.unobserve(entry.target);
-          }
-        },
-        { threshold: 0.08, rootMargin: "0px 0px -6% 0px" }
-      );
-      io.observe(el);
-    } catch {
-      el.classList.remove("is-reveal-ready");
-      el.style.removeProperty("transition-delay");
-    }
-
-    return () => io?.disconnect();
-  }, [delay]);
-
-  return (
-    <Tag ref={ref} className={`reveal ${className}`} style={style} {...rest}>
-      {children}
-    </Tag>
-  );
+  const motionStyle = { ...style, "--motion-delay": `${delay}ms` } as CSSProperties;
+  return <Tag className={`reveal reveal--${variant} ${className}`} style={motionStyle} {...rest}>{children}</Tag>;
 }

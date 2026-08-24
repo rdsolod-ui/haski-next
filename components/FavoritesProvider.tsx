@@ -24,6 +24,10 @@ const FavCtx = createContext<Ctx | null>(null);
 const KEY = "haski_favorites";
 type MetrikaWindow = Window & { ym?: (id: number, method: string, goal: string) => void };
 
+function persistItems(items: FavItem[]) {
+  try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {}
+}
+
 export function useFavorites() {
   const ctx = useContext(FavCtx);
   if (!ctx) throw new Error("useFavorites must be used within FavoritesProvider");
@@ -33,7 +37,6 @@ export function useFavorites() {
 export default function FavoritesProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<FavItem[]>([]);
   const [isOpen, setOpen] = useState(false);
-  const [ready, setReady] = useState(false);
   const panelRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
@@ -44,17 +47,14 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
       if (!active) return;
       try {
         const raw = localStorage.getItem(KEY);
-        if (raw) setItems(JSON.parse(raw));
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length) setItems(parsed);
+        }
       } catch {}
-      setReady(true);
     });
     return () => { active = false; };
   }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-    try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {}
-  }, [items, ready]);
 
   // синхронизация между вкладками
   useEffect(() => {
@@ -105,11 +105,13 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
 
   const has = useCallback((slug: string) => items.some((i) => i.slug === slug), [items]);
   const toggle = useCallback((item: FavItem) => {
-    setItems((prev) =>
-      prev.some((i) => i.slug === item.slug)
+    setItems((prev) => {
+      const next = prev.some((i) => i.slug === item.slug)
         ? prev.filter((i) => i.slug !== item.slug)
-        : [item, ...prev]
-    );
+        : [item, ...prev];
+      persistItems(next);
+      return next;
+    });
     try {
       const ym = (window as MetrikaWindow).ym;
       if (typeof ym === "function") {
@@ -117,7 +119,11 @@ export default function FavoritesProvider({ children }: { children: ReactNode })
       }
     } catch {}
   }, []);
-  const remove = useCallback((slug: string) => setItems((p) => p.filter((i) => i.slug !== slug)), []);
+  const remove = useCallback((slug: string) => setItems((prev) => {
+    const next = prev.filter((item) => item.slug !== slug);
+    persistItems(next);
+    return next;
+  }), []);
   const open = useCallback(() => {
     openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setOpen(true);

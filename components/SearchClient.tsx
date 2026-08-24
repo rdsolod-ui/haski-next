@@ -4,17 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { searchDogs, allSections, allDogs, plural, type Dog } from "@/lib/data";
 import DogCard from "./DogCard";
-import SectionCard from "./SectionCard";
 import { IconSearch, IconClose, IconPaw } from "./Icons";
-
-const QUICK: { label: string; q: string }[] = [
-  { label: "Голубоглазые", q: "голубые" },
-  { label: "Упряжные", q: "упряжной" },
-  { label: "Белоснежные", q: "белый" },
-  { label: "Фотогеничные", q: "фото" },
-  { label: "Спокойные", q: "спокой" },
-  { label: "Активные", q: "энергич" },
-];
 
 export default function SearchClient() {
   const params = useSearchParams();
@@ -31,8 +21,10 @@ export default function SearchClient() {
     window.history.replaceState(null, "", qs ? `/search?${qs}` : "/search");
   }, [query, section]);
 
-  const hasSearch = query.trim() !== "" || section !== "";
-  const results: Dog[] = useMemo(() => searchDogs(query, section || undefined), [query, section]);
+  const results: Dog[] = useMemo(
+    () => query.trim() || section ? searchDogs(query, section || undefined) : allDogs(),
+    [query, section],
+  );
   const total = allDogs().length;
 
   return (
@@ -46,7 +38,7 @@ export default function SearchClient() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Кличка, порода, окрас, характер… например: Адель, самоед, голубые глаза"
+            placeholder="Найдите по имени, породе или характеру"
             aria-label="Поиск собак"
             autoComplete="off"
             data-analytics="search"
@@ -66,44 +58,24 @@ export default function SearchClient() {
         ))}
       </div>
 
-      <div className="searchui__chips searchui__chips--quick" role="group" aria-label="Быстрые подборки">
-        {QUICK.map((c) => (
-          <button key={c.q} className={`chip chip--soft ${query.toLowerCase() === c.q ? "is-active" : ""}`} onClick={() => setQuery(c.q)} data-analytics="filter">
-            {c.label}
-          </button>
-        ))}
+      <div className="searchui__reshead">
+        <div>
+          <p className="section-no">Атлас / {results.length} из {total}</p>
+          <h2 className="h2">{results.length ? (results.length === total ? "Вся стая" : `Найдено: ${results.length}`) : "Следов не найдено"}</h2>
+        </div>
+        {(query || section) ? <button className="btn btn--ghost" onClick={() => { setQuery(""); setSection(""); }} data-analytics="filter">Сбросить</button> : null}
       </div>
 
-      {!hasSearch ? (
-        <div className="searchui__discovery">
-          <div className="searchui__reshead">
-            <h2 className="h2">Разделы стаи</h2>
-            <p className="muted">Откройте группу целиком — или наберите кличку выше.</p>
-          </div>
-          <div className="grid-cards">
-            {sections.map((s) => <SectionCard key={s.slug} section={s} />)}
-          </div>
+      {results.length ? (
+        <div className="grid-cards atlas-catalog">
+          {results.map((d, index) => <DogCard key={d.id} dog={d} priority={index < 3} index={index} />)}
         </div>
       ) : (
-        <>
-          <div className="searchui__reshead">
-            <div>
-              <span className="eyebrow">Результаты</span>
-              <h2 className="h2">{results.length ? `Найдено: ${results.length}` : "Ничего не нашлось"}</h2>
-            </div>
-            <button className="btn btn--ghost" onClick={() => { setQuery(""); setSection(""); }} data-analytics="filter">Сбросить</button>
-          </div>
-
-          {results.length ? (
-            <div className="grid-cards">
-              {results.map((d) => <DogCard key={d.id} dog={d} />)}
-            </div>
-          ) : (
             <div className="searchui__empty bezel">
               <div className="bezel__core searchui__emptycore">
                 <span className="searchui__emptyic"><IconPaw /></span>
-                <h3 className="h3">Совпадений нет</h3>
-                <p className="muted">Попробуйте другое слово, снимите фильтр раздела или выберите подборку.</p>
+                <h3 className="h3">Стая ушла по другой тропе</h3>
+                <p className="muted">Попробуйте имя, породу или снимите фильтр раздела.</p>
                 <div className="searchui__chips">
                   {["хаски", "маламут", "самоед", "олень"].map((q) => (
                     <button key={q} className="chip" onClick={() => { setSection(""); setQuery(q); }}>{q}</button>
@@ -111,8 +83,6 @@ export default function SearchClient() {
                 </div>
               </div>
             </div>
-          )}
-        </>
       )}
 
       <p className="searchui__count muted">В каталоге {total} {plural(total, "профиль", "профиля", "профилей")} · {sections.length} {plural(sections.length, "раздел", "раздела", "разделов")}</p>

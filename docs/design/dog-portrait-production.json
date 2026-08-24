@@ -1,0 +1,243 @@
+[
+  {
+    "slug": "adel",
+    "name": "Адель",
+    "reference": "public/media/dogs/adel-900.webp",
+    "output": "source/portraits-v2/adel.png",
+    "status": "completed",
+    "notes": "Visual QA passed: facial mask, blue eyes, ear shape and safe framing retained."
+  },
+  {
+    "slug": "ice",
+    "name": "Айс",
+    "reference": "public/media/dogs/ice-900.webp",
+    "output": "source/portraits-v2/ice.png",
+    "status": "completed",
+    "notes": "Visual QA passed: pale gray mask, blue eyes and compact head shape retained."
+  },
+  {
+    "slug": "arya",
+    "name": "Арья",
+    "reference": "public/media/dogs/arya-900.webp",
+    "output": "source/portraits-v2/arya.png",
+    "status": "completed",
+    "notes": "Visual QA passed: rounded muzzle, gray crown and blue eyes retained."
+  },
+  {
+    "slug": "bolt",
+    "name": "Болт",
+    "reference": "public/media/dogs/bolt-900.webp",
+    "output": "source/portraits-v2/bolt.png",
+    "status": "completed",
+    "notes": "Visual QA passed: black mask, cream brows and blue eyes retained."
+  },
+  {
+    "slug": "vais",
+    "name": "Вайс",
+    "reference": "public/media/dogs/vais-900.webp",
+    "output": "source/portraits-v2/vais.png",
+    "status": "completed",
+    "notes": "Visual QA passed: broad black-white mask, brown eyes and muzzle proportions retained."
+  },
+  {
+    "slug": "emmi",
+    "name": "Эмми",
+    "reference": "public/media/dogs/emmi-900.webp",
+    "output": "source/portraits-v2/emmi.png",
+    "status": "completed",
+    "notes": "Visual QA passed: white coat, blue eyes and slightly turned natural gaze retained."
+  },
+  {
+    "slug": "nika",
+    "name": "Ника",
+    "reference": "public/media/dogs/nika-900.webp",
+    "output": "source/portraits-v2/nika.png",
+    "status": "completed",
+    "notes": "Visual QA passed: white coat and side-specific brown/blue harlequin eyes retained."
+  },
+  {
+    "slug": "lord",
+    "name": "Лорд",
+    "reference": "public/media/dogs/lord-900.webp",
+    "output": "source/portraits-v2/lord.png",
+    "status": "completed",
+    "notes": "Visual QA passed: heavy black-white mask, dark brown eyes and broad head retained."
+  },
+  {
+    "slug": "yuki",
+    "name": "Юки",
+    "reference": "public/media/dogs/yuki-900.webp",
+    "output": "source/portraits-v2/yuki.png",
+    "status": "completed",
+    "notes": "Visual QA passed: center blaze and viewer-left brown/viewer-right blue heterochromia retained."
+  },
+  {
+    "slug": "mitsu",
+    "name": "Митсу",
+    "reference": "public/media/dogs/mitsu-900.webp",
+    "output": "source/portraits-v2/mitsu.png",
+    "status": "completed",
+    "notes": "Visual QA passed: gray mask and viewer-left brown/viewer-right blue heterochromia retained."
+  },
+  {
+    "slug": "yuta",
+    "name": "Юта",
+    "reference": "public/media/dogs/yuta-900.webp",
+    "output": "source/portraits-v2/yuta.png",
+    "status": "completed",
+    "notes": "Visual QA passed: soft gray crown, blue eyes and muzzle profile retained."
+  },
+  {
+    "slug": "eyva",
+    "name": "Эйва",
+    "reference": "public/media/dogs/eyva-900.webp",
+    "output": "source/portraits-v2/eyva.png",
+    "status": "completed",
+    "notes": "Visual QA passed: fine gray mask and intense blue eyes retained; framing includes additional body space."
+  },
+  {
+    "slug": "navigator",
+    "name": "Навигатор",
+    "reference": "public/media/dogs/navigator-900.webp",
+    "output": "source/portraits-v2/navigator.png",
+    "status": "completed",
+    "notes": "Visual QA passed: narrow black mask, brown eyes and focused expression retained."
+  },
+  {
+    "slug": "nirvana",
+    "name": "Нирвана",
+    "reference": "public/media/dogs/nirvana-900.webp",
+    "output": "source/portraits-v2/nirvana.png",
+    "status": "completed",
+    "notes": "Visual QA passed: dark mask, forehead streak and brown eyes retained."
+  },
+  {
+    "slug": "nayana",
+    "name": "Наяна",
+    "reference": "public/media/dogs/nayana-900.webp",
+    "output": "source/portraits-v2/nayana.png",
+    "status": "completed",
+    "notes": "Visual QA passed: symmetrical black-white mask, blue eyes and head proportions retained."
+  },
+  {
+    "slug": "niagara",
+    "name": "Ниагара",
+    "reference": "public/media/dogs/niagara-900.webp",
+    "output": "source/portraits-v2/niagara.png",
+    "status": "completed",
+    "notes": "Visual QA passed: narrow forehead blaze, dark eye mask and brown eyes retained."
+  },
+  {
+    "slug": "molot",
+    "name": "Молот",
+    "reference": "public/media/dogs/molot-900.webp",
+    "output": "source/portraits-v2/molot.png",
+    "status": "completed",
+    "notes": "Visual QA passed: warm gray coat, brown eyes and strong muzzle retained."
+  },
+  {
+    "slug": "flash",
+    "name": "Флеш",
+    "reference": "public/media/dogs/flash-900.webp",
+    "output": "source/portraits-v2/flash.png",
+    "status": "completed",
+    "notes": "Visual QA passed: dark eye mask, pale blue eyes and distinctive pink-gray nose retained."
+  },
+  {
+    "slug": "vyuga",
+    "name": "Вьюга",
+    "reference": "public/media/dogs/vyuga-900.webp",
+    "output": "source/portraits-v2/vyuga.png",
+    "status": "completed",
+    "notes": "Visual QA passed: silver-gray mask, brown eyes and narrow muzzle retained."
+  },
+  {
+    "slug": "olivia",
+    "name": "Оливия",
+    "reference": "public/media/dogs/olivia-900.webp",
+    "output": "source/portraits-v2/olivia.png",
+    "status": "completed",
+    "notes": "Visual QA passed: red-white coat, round brown eyes and compact facial proportions retained."
+  },
+  {
+    "slug": "chelsi",
+    "name": "Челси",
+    "reference": "public/media/dogs/chelsi-900.webp",
+    "output": "source/portraits-v2/chelsi.png",
+    "status": "completed",
+    "notes": "Visual QA passed: gray-white mask, blue eyes and upright ears retained."
+  },
+  {
+    "slug": "puma",
+    "name": "Пума",
+    "reference": "public/media/dogs/puma-900.webp",
+    "output": "source/portraits-v2/puma.png",
+    "status": "completed",
+    "notes": "Visual QA passed: white forehead shield, dark eye mask and blue eyes retained."
+  },
+  {
+    "slug": "daimond",
+    "name": "Даймонд",
+    "reference": "public/media/dogs/daimond-900.webp",
+    "output": "source/portraits-v2/daimond.png",
+    "status": "completed",
+    "notes": "Visual QA passed: malamute build, broad gray-white face and blue eyes retained."
+  },
+  {
+    "slug": "volt",
+    "name": "Вольт",
+    "reference": "public/media/dogs/volt-900.webp",
+    "output": "source/portraits-v2/volt.png",
+    "status": "completed",
+    "notes": "Visual QA passed: rounded Samoyed ears, white coat and dark brown eyes retained."
+  },
+  {
+    "slug": "irbis",
+    "name": "Ирбис",
+    "reference": "public/media/dogs/irbis-900.webp",
+    "output": "source/portraits-v2/irbis.png",
+    "status": "completed",
+    "notes": "Visual QA passed: broad white Samoyed face, brown eyes and brown-toned nose retained."
+  },
+  {
+    "slug": "oliver",
+    "name": "Оливер",
+    "reference": "public/media/dogs/oliver-900.webp",
+    "output": "source/portraits-v2/oliver.png",
+    "status": "completed",
+    "notes": "Visual QA passed: preserved as a noble red deer, not a dog; full antlers, brown coat and species anatomy retained."
+  },
+  {
+    "slug": "ori",
+    "name": "Ори",
+    "reference": "public/media/dogs/ori-900.webp",
+    "output": "source/portraits-v2/ori.png",
+    "status": "completed",
+    "notes": "Visual QA passed: red coat, dark eyes, slender muzzle and asymmetric natural gaze retained."
+  },
+  {
+    "slug": "kiku",
+    "name": "Кику",
+    "reference": "public/media/dogs/kiku-900.webp",
+    "output": "source/portraits-v2/kiku.png",
+    "status": "completed",
+    "notes": "Visual QA passed: deeper red coat, dark eyes, compact muzzle and subtle smile retained."
+  },
+  {
+    "slug": "skif",
+    "name": "Скиф",
+    "reference": "public/media/dogs/skif-900.webp",
+    "output": "source/portraits-v2/skif.png",
+    "status": "completed",
+    "notes": "Visual QA passed: wolf-gray double coat, black mask and lively open-mouth expression retained."
+  },
+  {
+    "slug": "set",
+    "name": "Сет",
+    "reference": "public/media/dogs/set-900.webp",
+    "output": "source/portraits-v2/set.png",
+    "status": "completed",
+    "notes": "Visual QA passed: compact Keeshond build, dark mask, brown eyes and friendly open-mouth expression retained."
+  }
+]
+

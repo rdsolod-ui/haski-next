@@ -11,6 +11,10 @@ export function localDogCover(slug: string, width: 480 | 900 = 900, format: "web
   return `/media/dogs/${slug}-${width}.${format}`;
 }
 
+export function localDogPortrait(slug: string, width: 480 | 900 = 900, format: "webp" | "avif" = "webp") {
+  return `/media/portraits-v2/${slug}-${width}.${format}`;
+}
+
 export default function DogImage({
   slug,
   alt,
@@ -21,6 +25,16 @@ export default function DogImage({
 }: DogImageProps) {
   return (
     <picture>
+      <source
+        type="image/avif"
+        srcSet={`${localDogPortrait(slug, 480, "avif")} 480w, ${localDogPortrait(slug, 900, "avif")} 900w`}
+        sizes={sizes}
+      />
+      <source
+        type="image/webp"
+        srcSet={`${localDogPortrait(slug, 480)} 480w, ${localDogPortrait(slug, 900)} 900w`}
+        sizes={sizes}
+      />
       <source
         type="image/avif"
         srcSet={`${localDogCover(slug, 480, "avif")} 480w, ${localDogCover(slug, 900, "avif")} 900w`}
@@ -39,7 +53,7 @@ export default function DogImage({
         loading={loading}
         fetchPriority={fetchPriority}
         width={900}
-        height={900}
+        height={1125}
         decoding="async"
         className={className}
       />

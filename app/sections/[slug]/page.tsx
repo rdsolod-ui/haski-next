@@ -66,8 +66,7 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
         <span aria-current="page">{section.name}</span>
       </nav>
 
-      <header className="pagehero">
-        <span className="eyebrow">Раздел Хаски Лэнд</span>
+      <header className="pagehero" data-index="Раздел северного атласа">
         <h1 className="h1">{section.name}</h1>
         {section.intro ? <p className="lead">{section.intro}</p> : null}
         <p className="muted">{section.count} {plural(section.count, "профиль", "профиля", "профилей")} в разделе · {TOTAL_DOGS} всего в каталоге</p>
@@ -79,14 +78,14 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
 
       <div className="grid-cards" style={{ marginTop: "clamp(28px,4vw,52px)" }}>
         {dogs.map((d, i) => (
-          <Reveal key={d.id} delay={(i % 4) * 60}><DogCard dog={d} priority={i < 4} /></Reveal>
+          <Reveal key={d.id} delay={(i % 4) * 60} variant={i % 2 ? "scale" : "rise"}><DogCard dog={d} priority={i < 4} index={i} /></Reveal>
         ))}
       </div>
 
       <section className="section" style={{ paddingBottom: 0 }}>
         <div className="section-head">
           <div className="section-head__t">
-            <span className="eyebrow">Другие разделы</span>
+            <p className="section-no">Другие маршруты</p>
             <h2 className="h2">Продолжить знакомство со стаей</h2>
           </div>
           <Link href="/sections" className="seccard__go">Все разделы <IconArrow /></Link>

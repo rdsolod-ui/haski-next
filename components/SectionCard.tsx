@@ -14,7 +14,6 @@ export default function SectionCard({ section }: { section: Section }) {
         ) : (
           <div className="seccard__ph" />
         )}
-        <span className="seccard__tag">Раздел Хаски Лэнд</span>
       </div>
       <div className="seccard__body">
         <h3 className="h3">{section.name}</h3>

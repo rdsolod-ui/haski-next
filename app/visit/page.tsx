@@ -56,11 +56,10 @@ export default function VisitPage() {
         <Link href="/">Главная</Link><span>/</span><span aria-current="page">Визит</span>
       </nav>
 
-      <header className="pagehero">
-        <span className="eyebrow">Планирование визита</span>
-        <h1 className="h1">Всё важное <span className="aurora-text">до поездки</span></h1>
+      <header className="pagehero" data-index="Маршрут / подготовка к встрече">
+        <h1 className="h1">Подготовьте маршрут. <span className="aurora-text">Оставьте место чуду.</span></h1>
         <p className="lead">
-          Сначала выберите любимцев, затем проверьте актуальные условия на официальной странице и переходите к покупке билета.
+          Выберите любимцев, покажите их ребёнку, проверьте актуальные условия — и приезжайте без лишней суеты.
         </p>
         <div className="pagehero__actions">
           <a className="btn btn--cta" href={SITE.ticketsUrl} target="_blank" rel="noopener noreferrer" data-analytics="buy-ticket">
@@ -73,7 +72,7 @@ export default function VisitPage() {
       <section className="info-section" aria-labelledby="visit-format">
         <div className="section-head">
           <div className="section-head__t">
-            <span className="eyebrow">Формат</span>
+            <p className="section-no">Три опоры визита</p>
             <h2 className="h2" id="visit-format">Как проходит знакомство</h2>
           </div>
         </div>
@@ -90,7 +89,7 @@ export default function VisitPage() {
 
       <section className="info-section info-split" aria-labelledby="visit-hours">
         <article className="info-card">
-          <span className="eyebrow">Режим Парка Сказка</span>
+          <p className="section-no">Режим Парка Сказка</p>
           <h2 className="h2" id="visit-hours">Когда приезжать</h2>
           <p className="lead">{SITE.parkHoursRegular}<br />{SITE.parkHoursWeekend}</p>
           <p className="muted">Это режим всего Парка Сказка. Работа конкретной локации может меняться — проверьте её перед выездом.</p>
@@ -99,7 +98,7 @@ export default function VisitPage() {
           </a>
         </article>
         <article className="info-card">
-          <span className="eyebrow">Правила</span>
+          <p className="section-no">Главное правило</p>
           <h2 className="h2">Бережный контакт</h2>
           <p className="lead">Следуйте указаниям сотрудников и правилам площадки. Не кормите животных, не шумите у вольеров и снимайте без вспышки.</p>
           <a className="seccard__go" href={SITE.officialFaqUrl} target="_blank" rel="noopener noreferrer">
