@@ -31,10 +31,9 @@ export default function SearchPage() {
         <Link href="/">Главная</Link><span>/</span><span aria-current="page">Поиск</span>
       </nav>
 
-      <header className="pagehero">
-        <span className="eyebrow">Каталог · Навигация</span>
-        <h1 className="h1">Найдите <span className="aurora-text">свою собаку</span> Хаски Лэнд</h1>
-        <p className="lead">Ищите по кличке, породе, окрасу, глазам и характеру. Добавляйте любимцев в избранное и приходите в Парк Сказка уже со своим списком.</p>
+      <header className="pagehero" data-index="Поиск / живая навигация">
+        <h1 className="h1">Найдите того, кто <span className="aurora-text">запомнится</span></h1>
+        <p className="lead">Имя, порода, окрас или черта характера — одна строка приведёт к нужному профилю. А избранное сохранит маршрут до визита.</p>
         <div className="pagehero__actions">
           <a className="btn btn--cta" href={SITE.ticketsUrl} target="_blank" rel="noopener noreferrer" data-analytics="buy-ticket">Купить билет <span className="btn__ic"><IconTicket /></span></a>
         </div>

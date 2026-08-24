@@ -1,163 +1,157 @@
 import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
-import {
-  allSections, getDog, dogSlug, TOTAL_DOGS, TOTAL_SECTIONS,
-} from "@/lib/data";
+import { allDogs, allSections, getDog, dogSlug, TOTAL_DOGS, TOTAL_SECTIONS } from "@/lib/data";
 import SequenceHero from "@/components/SequenceHero";
-import ScrollStory from "@/components/ScrollStory";
 import Reveal from "@/components/Reveal";
 import DogCard from "@/components/DogCard";
 import SectionCard from "@/components/SectionCard";
 import JsonLd from "@/components/JsonLd";
 import { IconArrow, IconPaw, IconTicket, IconSearch, IconHeart, IconSparkle, IconMountain } from "@/components/Icons";
 
-const POPULAR = ["adel", "bolt", "emmi", "yuki", "lord", "chelsi", "puma", "oliver"];
+const FEATURED = ["adel", "bolt", "emmi", "yuki", "lord", "chelsi", "puma"];
 
 const FAQ = [
-  { q: "Что такое Хаски Лэнд?", a: "Хаски Лэнд — раздел Парка Сказка в Москве, где живут северные собаки: хаски, маламуты, самоеды, лайки и кеесхонды, а также другие обитатели. На сайте можно заранее познакомиться с их профилями и выбрать любимцев до визита." },
-  { q: "Можно ли потрогать или погладить собак?", a: "Любой контакт с животными возможен только по правилам площадки и подсказке сотрудников. Заранее на сайте вы выбираете профили, а формат знакомства на месте определяют сотрудники Хаски Лэнд — это безопасно и для гостей, и для животных." },
-  { q: "Как выбрать собаку до поездки?", a: "Откройте каталог, листайте карточки, добавляйте понравившихся в избранное (сохраняется в вашем браузере) и приходите со списком любимцев. Так визит проходит спокойнее и интереснее, особенно с детьми." },
-  { q: "Подходит ли Хаски Лэнд для детей?", a: "Да, это семейный формат. Заранее показать ребёнку собак, выбрать «своего» любимца и обсудить правила бережного контакта — отличная подготовка к поездке." },
-  { q: "Где купить билет?", a: "Билет в Парк Сказка покупается на официальной витрине. Кнопка «Купить билет» на сайте ведёт именно туда." },
-  { q: "Сколько собак и разделов в Хаски Лэнд?", a: `Сейчас в каталоге ${TOTAL_DOGS} профилей и ${TOTAL_SECTIONS} разделов: сибирские хаски, аляскинские маламуты, самоеды, карело-финские лайки, кеесхонды и другие обитатели.` },
+  { q: "Можно выбрать любимцев заранее?", a: "Да. Откройте атлас, изучите характеры и сохраните понравившихся в избранное. Список останется в этом браузере и поможет построить маршрут на месте." },
+  { q: "Подойдёт ли знакомство ребёнку?", a: "Хаски Лэнд задуман как семейный маршрут. Перед поездкой покажите ребёнку профили животных и вместе выберите тех, с кем хочется познакомиться. На месте соблюдайте подсказки сотрудников." },
+  { q: "Можно гладить и кормить животных?", a: "Не кормите животных и не просовывайте руки в вольеры. Формат близкого знакомства определяет сотрудник Хаски Лэнд — так спокойнее гостям и безопаснее питомцам." },
+  { q: "Где купить билет?", a: "Кнопка «Купить билет» ведёт на официальную билетную витрину Парка Сказка. Актуальные условия визита проверяйте там перед поездкой." },
 ];
 
-const SCENARIOS = [
-  { icon: <IconPaw />, title: "Хочу выбрать собаку", text: "Листайте каталог и собирайте любимцев в избранное до приезда.", href: "/search", cta: "Открыть каталог" },
-  { icon: <IconMountain />, title: "Хочу посмотреть разделы", text: "Хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели.", href: "/sections", cta: "Все разделы" },
-  { icon: <IconHeart />, title: "Планирую визит с ребёнком", text: "Проверьте правила сопровождения, адрес и актуальные условия до поездки.", href: "/visit", cta: "Спланировать визит" },
+const PATHS = [
+  { icon: <IconSparkle />, code: "01", title: "Зацепиться взглядом", text: "Откройте портреты без спешки. Взгляд, окрас и энергия часто выбирают любимца раньше, чем факты." },
+  { icon: <IconHeart />, code: "02", title: "Узнать характер", text: "В каждом профиле — темперамент, привычки и подсказка для знакомства. Не каталог пород, а карта живых характеров." },
+  { icon: <IconMountain />, code: "03", title: "Приехать своей стаей", text: "Сохраните любимцев, купите билет и приезжайте в Парк Сказка уже с личным маршрутом." },
 ];
 
 export default function HomePage() {
+  const dogs = allDogs();
   const sections = allSections();
-  const popular = POPULAR.map((s) => getDog(s)).filter(Boolean) as NonNullable<ReturnType<typeof getDog>>[];
+  const featured = FEATURED.map((slug) => getDog(slug)).filter(Boolean) as NonNullable<ReturnType<typeof getDog>>[];
 
   const ld = [
-    { "@context": "https://schema.org", "@type": "CollectionPage", name: SITE.fullName, url: SITE.baseUrl + "/", inLanguage: "ru-RU", description: "Каталог северных собак Хаски Лэнд в Парке Сказка." },
-    { "@context": "https://schema.org", "@type": "ItemList", name: "Популярные собаки Хаски Лэнд", itemListElement: popular.map((d, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE.baseUrl}/dogs/${dogSlug(d)}`, name: d.name_ru })) },
+    { "@context": "https://schema.org", "@type": "CollectionPage", name: SITE.fullName, url: SITE.baseUrl + "/", inLanguage: "ru-RU", description: "Цифровой атлас северных собак Хаски Лэнд в Парке Сказка." },
+    { "@context": "https://schema.org", "@type": "ItemList", name: "Стая Хаски Лэнд", itemListElement: dogs.map((d, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE.baseUrl}/dogs/${dogSlug(d)}`, name: d.name_ru })) },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
   ];
 
   return (
     <>
       <JsonLd data={ld} />
-
       <SequenceHero />
 
-      {/* Сценарии визита — светлый «снег» */}
-      <section className="panel panel--snow">
-        <div className="container">
-          <Reveal className="lede">
-            <span className="eyebrow">С чего начать</span>
-            <h2 className="h2">Выберите свой сценарий визита</h2>
-            <p className="muted">Сайт помогает подготовиться к поездке заранее — чтобы в Хаски Лэнд вы пришли уже со своими любимцами.</p>
+      <section className="pack-index panel-v2" aria-label="Имена стаи">
+        <div className="container container--wide">
+          <Reveal variant="clip" className="section-title section-title--split">
+            <p className="section-no">Стая / {TOTAL_DOGS}</p>
+            <h2>Не выбирайте породу.<br /><span>Выберите характер.</span></h2>
+            <p>У каждого — своё имя, взгляд и способ покорить гостей. Начните с того, кто позвал первым.</p>
           </Reveal>
-          <div className="bento">
-            {SCENARIOS.map((s, i) => (
-              <Reveal key={s.title} as="article" delay={i * 70} className="bento__cell bento__cell--third">
-                <span className="bento__ic">{s.icon}</span>
-                <h3 className="h3">{s.title}</h3>
-                <p>{s.text}</p>
-                <Link href={s.href} className="seccard__go" style={{ marginTop: "auto" }}>{s.cta} <IconArrow /></Link>
+          <Reveal as="nav" variant="soft" className="pack-names" aria-label="Все профили животных">
+            {dogs.map((dog, index) => (
+              <span key={dog.id}>
+                <Link href={`/dogs/${dogSlug(dog)}`}><small>{String(index + 1).padStart(2, "0")}</small>{dog.name_ru}</Link>
+              </span>
+            ))}
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="character-atlas panel-v2 panel-v2--frost">
+        <div className="container">
+          <Reveal variant="soft" className="section-title">
+            <p className="section-no">Ваш маршрут / 3 шага</p>
+            <h2>Знакомство начинается<br />ещё <span>до поездки</span></h2>
+          </Reveal>
+          <div className="path-grid">
+            {PATHS.map((path, index) => (
+              <Reveal as="article" key={path.code} delay={index * 90} variant={index === 1 ? "scale" : "rise"} className="path-card">
+                <div className="path-card__top"><span>{path.code}</span><i>{path.icon}</i></div>
+                <h3>{path.title}</h3>
+                <p>{path.text}</p>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Разделы стаи — поверхность */}
-      <section className="panel panel--pure" id="sections">
-        <div className="container">
-          <Reveal className="lede">
-            <span className="eyebrow">Стая Хаски Лэнд</span>
-            <h2 className="h2">{TOTAL_SECTIONS} разделов · {TOTAL_DOGS} профилей</h2>
-            <p className="muted">От сибирских хаски до благородного оленя — каждый раздел можно открыть целиком.</p>
+      <section className="portrait-rail panel-v2">
+        <div className="container container--wide">
+          <Reveal variant="clip" className="section-title section-title--split">
+            <p className="section-no">Выбор гостей / портреты</p>
+            <h2>Семь причин<br /><span>задержаться</span></h2>
+            <p>Листайте не по породам, а по эмоции. Карточка не обрезает животное: портрет остаётся цельным на любом экране.</p>
           </Reveal>
-          <div className="grid-cards">
-            {sections.map((s, i) => (
-              <Reveal key={s.slug} delay={(i % 3) * 70}><SectionCard section={s} /></Reveal>
+          <div className="atlas-grid">
+            {featured.map((dog, index) => (
+              <Reveal key={dog.id} variant={index === 0 ? "scale" : "rise"} delay={(index % 3) * 80} className={index === 0 ? "atlas-grid__feature" : ""}>
+                <DogCard dog={dog} variant={index === 0 ? "feature" : "standard"} index={index} />
+              </Reveal>
             ))}
           </div>
-          <div className="panel__foot">
-            <Link href="/sections" className="btn btn--ghost">Все разделы <span className="btn__ic"><IconArrow /></span></Link>
-          </div>
+          <Reveal className="panel-action" variant="soft">
+            <Link href="/dogs" className="text-link">Смотреть все {TOTAL_DOGS} профилей <IconArrow /></Link>
+          </Reveal>
         </div>
       </section>
 
-      {/* Pinned scroll-story — word-by-word reveal */}
-      <ScrollStory />
-
-      {/* Знакомьтесь со стаей — «снег» */}
-      <section className="panel panel--snow">
-        <div className="container">
-          <Reveal className="lede">
-            <span className="eyebrow">Любимцы гостей</span>
-            <h2 className="h2">Познакомьтесь со стаей</h2>
-            <p className="muted">Откройте профиль, посмотрите фото и характер — и добавьте в избранное.</p>
+      <section className="route-scene panel-v2 panel-v2--night">
+        <div className="container route-scene__grid">
+          <Reveal variant="left" className="route-scene__copy">
+            <p className="section-no">56.169° N / маршрут к встрече</p>
+            <h2>Сначала — имя.<br />Потом — <span>настоящая встреча.</span></h2>
+            <p>Добавьте любимцев в избранное. На месте откройте список и превратите прогулку по Хаски Лэнд в личную экспедицию.</p>
+            <Link className="btn btn--ghost btn--lg" href="/search">Собрать свою стаю <span className="btn__ic"><IconPaw /></span></Link>
           </Reveal>
-          <div className="grid-cards">
-            {popular.map((d, i) => (
-              <Reveal key={d.id} delay={(i % 4) * 60}><DogCard dog={d} /></Reveal>
-            ))}
-          </div>
-          <div className="panel__foot">
-            <Link href="/search" className="btn btn--ghost">Весь каталог <span className="btn__ic"><IconSearch /></span></Link>
-          </div>
+          <Reveal variant="right" className="route-map" aria-hidden>
+            <span className="route-map__orbit route-map__orbit--a" />
+            <span className="route-map__orbit route-map__orbit--b" />
+            <span className="route-map__point route-map__point--a">Выбор</span>
+            <span className="route-map__point route-map__point--b">Встреча</span>
+            <strong>ХАСКИ<br />ЛЭНД</strong>
+          </Reveal>
         </div>
       </section>
 
-      {/* Перед визитом — тёмная панель (ритм свет/тьма) */}
-      <section className="panel panel--night">
+      <section className="section-atlas panel-v2 panel-v2--frost">
         <div className="container">
-          <Reveal className="lede">
-            <span className="eyebrow">Перед визитом</span>
-            <h2 className="h2">Спокойная подготовка к поездке</h2>
+          <Reveal variant="clip" className="section-title section-title--split">
+            <p className="section-no">Северный атлас / {TOTAL_SECTIONS}</p>
+            <h2>Одна стая.<br /><span>Разные миры.</span></h2>
+            <p>Хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели — откройте раздел целиком.</p>
           </Reveal>
-          <div className="duo">
-            <Reveal as="article" className="duo__col">
-              <span className="duo__ic"><IconSparkle /></span>
-              <h3 className="h3">Как выбрать любимца</h3>
-              <p>Листайте каталог, открывайте профили, читайте характер и факты. Добавляйте понравившихся в избранное — список сохранится в браузере и будет под рукой в день визита.</p>
-              <Link href="/search" className="duo__link">Начать выбор <IconArrow /></Link>
-            </Reveal>
-            <Reveal as="article" delay={90} className="duo__col">
-              <span className="duo__ic"><IconHeart /></span>
-              <h3 className="h3">Правила бережного контакта</h3>
-              <p>Не кормите животных, не шумите рядом с вольерами, фотографируйте без вспышки. Любой близкий контакт — только по правилам площадки и подсказке сотрудников Хаски Лэнд.</p>
-            </Reveal>
+          <div className="section-atlas__grid">
+            {sections.map((section, index) => <Reveal key={section.slug} delay={(index % 3) * 80} variant={index % 2 ? "scale" : "rise"}><SectionCard section={section} /></Reveal>)}
           </div>
+          <div className="panel-action"><Link href="/sections" className="text-link">Открыть все разделы <IconArrow /></Link></div>
         </div>
       </section>
 
-      {/* FAQ — «снег» */}
-      <section className="panel panel--snow">
-        <div className="container">
-          <Reveal className="lede">
-            <span className="eyebrow">Вопросы</span>
-            <h2 className="h2">Частые вопросы</h2>
+      <section className="faq-v2 panel-v2">
+        <div className="container faq-v2__grid">
+          <Reveal variant="left" className="section-title">
+            <p className="section-no">Перед поездкой / коротко</p>
+            <h2>Чтобы на месте<br />остались только <span>эмоции</span></h2>
           </Reveal>
-          <div className="faq">
-            {FAQ.map((f) => (
-              <details key={f.q} className="faq__item">
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
+          <Reveal variant="right" className="faq-v2__list">
+            {FAQ.map((item, index) => (
+              <details key={item.q} className="faq-v2__item" open={index === 0}>
+                <summary><span>{String(index + 1).padStart(2, "0")}</span>{item.q}</summary>
+                <p>{item.a}</p>
               </details>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* Финальный CTA — единственный громкий янтарный момент */}
-      <section className="panel panel--pure">
+      <section className="closing-v2 panel-v2">
         <div className="container">
-          <Reveal className="finalcta">
-            <span className="finalcta__orb aurora-orb" style={{ width: "60%", height: "120%", left: "-10%", top: "-30%", background: "radial-gradient(circle, rgba(58,208,196,.5), transparent 70%)" }} />
-            <span className="eyebrow" style={{ color: "#fff", borderColor: "rgba(255,255,255,.3)", background: "rgba(255,255,255,.12)" }}>Живой цифровой вход в Хаски Лэнд</span>
-            <h2 className="h2">Соберите свою стаю — и приезжайте в Парк Сказка</h2>
-            <p>Выберите любимцев заранее, покажите детям северных собак и спланируйте маршрут. Билет — на официальной витрине Парка Сказка.</p>
-            <div className="finalcta__actions">
+          <Reveal variant="scale" className="closing-v2__card">
+            <p className="section-no">Север ближе, чем кажется</p>
+            <h2>Ваша стая уже ждёт.</h2>
+            <p>Выберите любимцев сегодня. Познакомьтесь по-настоящему — в Парке Сказка.</p>
+            <div className="closing-v2__actions">
               <a className="btn btn--cta btn--lg" href={SITE.ticketsUrl} target="_blank" rel="noopener noreferrer" data-analytics="buy-ticket">Купить билет <span className="btn__ic"><IconTicket /></span></a>
-              <Link className="btn btn--ghost btn--lg" href="/search" data-analytics="search" style={{ color: "#fff", background: "rgba(255,255,255,.12)", borderColor: "rgba(255,255,255,.28)" }}>Выбрать любимца <span className="btn__ic"><IconPaw /></span></Link>
+              <Link className="btn btn--ghost btn--lg" href="/dogs">Открыть атлас <span className="btn__ic"><IconSearch /></span></Link>
             </div>
           </Reveal>
         </div>

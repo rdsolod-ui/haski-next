@@ -17,31 +17,30 @@ export default function AboutPage() {
     <div className="section container info-page">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "AboutPage", name: "О Хаски Лэнд", url: `${SITE.baseUrl}/about` }} />
       <nav className="crumbs" aria-label="Хлебные крошки"><Link href="/">Главная</Link><span>/</span><span aria-current="page">О Хаски Лэнд</span></nav>
-      <header className="pagehero">
-        <span className="eyebrow">О локации</span>
-        <h1 className="h1">Знакомство со стаей <span className="aurora-text">начинается здесь</span></h1>
-        <p className="lead">Хаски Лэнд — тематическая локация Парка Сказка, где гости наблюдают за северными собаками и другими обитателями, узнают их характеры и истории.</p>
+      <header className="pagehero" data-index="Хаски Лэнд / больше, чем локация">
+        <h1 className="h1">У каждого зверя — история. <span className="aurora-text">У вас — встреча.</span></h1>
+        <p className="lead">Хаски Лэнд — северный мир внутри Парка Сказка. Здесь не просто смотрят на животных: запоминают имена, считывают характеры и находят любимцев.</p>
       </header>
 
       <section className="info-section info-split">
         <article className="info-card">
           <span className="bento__ic"><IconPaw /></span>
-          <h2 className="h2">{TOTAL_DOGS} профилей</h2>
-          <p>Каталог сохраняет имена и постоянные адреса страниц собак. По этим адресам работают QR-коды на вольерах.</p>
+          <h2 className="h2">{TOTAL_DOGS} историй</h2>
+          <p>У каждого обитателя — постоянная цифровая страница. QR-код у вольера открывает именно её, чтобы имя и история всегда были рядом.</p>
           <Link className="seccard__go" href="/search">Открыть каталог <IconArrow /></Link>
         </article>
         <article className="info-card">
           <span className="bento__ic"><IconHeart /></span>
-          <h2 className="h2">Забота и наблюдение</h2>
-          <p>По официальной информации, об обитателях заботятся специалисты, которые рассказывают гостям об их привычках и особенностях характера.</p>
+          <h2 className="h2">Забота прежде кадра</h2>
+          <p>Специалисты знают привычки и настроение каждого обитателя. Поэтому знакомство строится вокруг бережного наблюдения и правил площадки.</p>
           <a className="seccard__go" href={SITE.officialHuskyUrl} target="_blank" rel="noopener noreferrer">Проверить официальный источник <IconArrow /></a>
         </article>
       </section>
 
       <section className="info-section info-card">
-        <span className="eyebrow">Навигация</span>
-        <h2 className="h2">{TOTAL_SECTIONS} разделов стаи</h2>
-        <p className="lead">Сибирские хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели собраны в понятные разделы.</p>
+        <p className="section-no">Северный атлас / {TOTAL_SECTIONS} миров</p>
+        <h2 className="h2">Разные породы. Одна большая стая.</h2>
+        <p className="lead">Сибирские хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели — выбирайте путь по породе или по характеру.</p>
         <div className="pagehero__actions">
           <Link className="btn btn--brand" href="/sections">Смотреть разделы <span className="btn__ic"><IconPaw /></span></Link>
           <Link className="btn btn--ghost" href="/search">Поиск по характеру <span className="btn__ic"><IconSearch /></span></Link>

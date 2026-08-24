@@ -1,6 +1,6 @@
 {
   "name": "haski-next",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,6 +10,7 @@
     "test:routes": "node scripts/check-route-contract.mjs",
     "test:e2e": "playwright test",
     "test:lighthouse": "node scripts/run-lighthouse.mjs",
+    "media:portraits": "node scripts/process-v2-portraits.mjs",
     "artifact:manifest": "node scripts/create-artifact-manifest.mjs",
     "check": "npm run lint && npm run build && npm run test:routes && npm run test:e2e && npm run test:lighthouse"
   },

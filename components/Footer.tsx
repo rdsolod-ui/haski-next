@@ -13,19 +13,16 @@ export default function Footer() {
                 <span className="brand__mark"><IconPaw /></span>
                 <span className="brand__text">Хаски<span>Лэнд</span></span>
               </Link>
-              <p className="muted">
-                Хаски Лэнд — раздел Парка Сказка, где можно заранее познакомиться с северными
-                собаками и другими обитателями локации: фото, характеры, факты и переход к билету.
-              </p>
+              <p className="muted">Цифровой атлас живых характеров. Выберите любимцев до поездки — и приезжайте в Парк Сказка уже со своей стаей.</p>
               <a className="sitefooter__phone" href={`tel:${SITE.phoneHref}`}>{SITE.phone}</a>
             </div>
 
             <nav className="sitefooter__nav" aria-label="Навигация по сайту">
-              <span className="sitefooter__navtitle">Навигация</span>
+              <span className="sitefooter__navtitle">Проложить маршрут</span>
               <Link href="/">Главная</Link>
               <Link href="/visit">Спланировать визит</Link>
               <Link href="/sections">Разделы</Link>
-              <Link href="/dogs">Каталог собак</Link>
+              <Link href="/dogs">Атлас стаи</Link>
               <Link href="/about">О Хаски Лэнд</Link>
               <Link href="/faq">Вопросы</Link>
               <Link href="/contacts">Контакты</Link>

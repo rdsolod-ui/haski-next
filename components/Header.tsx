@@ -31,14 +31,14 @@ export default function Header() {
         <nav className="siteheader__nav" aria-label="Основная навигация">
           <Link href="/" className={is("/") ? "is-active" : ""} aria-current={is("/") ? "page" : undefined}>Главная</Link>
           <Link href="/visit" className={is("/visit") ? "is-active" : ""} aria-current={is("/visit") ? "page" : undefined}>Визит</Link>
-          <Link href="/dogs" className={dogsActive ? "is-active" : ""} aria-current={dogsActive ? "page" : undefined}>Собаки</Link>
+          <Link href="/dogs" className={dogsActive ? "is-active" : ""} aria-current={dogsActive ? "page" : undefined}>Атлас</Link>
           <Link href="/sections" className={is("/sections") ? "is-active" : ""} aria-current={is("/sections") ? "page" : undefined}>Разделы</Link>
           <a href={SITE.parkUrl} target="_blank" rel="noopener noreferrer">Парк Сказка</a>
         </nav>
 
         <div className="siteheader__tools">
           <a className="btn btn--cta siteheader__cta" href={SITE.ticketsUrl} target="_blank" rel="noopener noreferrer" data-analytics="buy-ticket" aria-label="Купить билет в Парк Сказка">
-            <span>Билеты</span><span className="btn__ic"><IconTicket /></span>
+            <span>Купить билет</span><span className="btn__ic"><IconTicket /></span>
           </a>
         </div>
       </div>

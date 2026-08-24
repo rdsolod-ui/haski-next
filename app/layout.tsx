@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./components.css";
+import "./v2.css";
 import { SITE } from "@/lib/constants";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -9,6 +10,7 @@ import ScrollTop from "@/components/ScrollTop";
 import FavoritesProvider from "@/components/FavoritesProvider";
 import JsonLd from "@/components/JsonLd";
 import Metrika from "@/components/Metrika";
+import PageMotion from "@/components/PageMotion";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.baseUrl),
@@ -69,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <BottomNav />
           <ScrollTop />
+          <PageMotion />
         </FavoritesProvider>
         <Metrika />
         <noscript>

@@ -43,10 +43,9 @@ export default function SectionsPage() {
         <Link href="/">Главная</Link><span>/</span><span aria-current="page">Разделы</span>
       </nav>
 
-      <header className="pagehero">
-        <span className="eyebrow">Стая Хаски Лэнд</span>
-        <h1 className="h1">{TOTAL_SECTIONS} разделов <span className="aurora-text">северной стаи</span></h1>
-        <p className="lead">От сибирских хаски до благородного оленя — {TOTAL_DOGS} профилей обитателей Парка Сказка. Откройте раздел целиком и соберите любимцев до визита.</p>
+      <header className="pagehero" data-index={`Северный атлас / ${TOTAL_SECTIONS} миров`}>
+        <h1 className="h1">У каждой породы — <span className="aurora-text">свой север</span></h1>
+        <p className="lead">От стремительных хаски до благородного оленя — {TOTAL_DOGS} живых профилей. Откройте мир целиком или сразу отправляйтесь к конкретному характеру.</p>
         <div className="pagehero__actions">
           <Link className="btn btn--ghost" href="/search">Открыть поиск <span className="btn__ic"><IconSearch /></span></Link>
           <a className="btn btn--cta" href={SITE.ticketsUrl} target="_blank" rel="noopener noreferrer" data-analytics="buy-ticket">Купить билет <span className="btn__ic"><IconTicket /></span></a>
@@ -55,7 +54,7 @@ export default function SectionsPage() {
 
       <div className="grid-cards" style={{ marginTop: "clamp(28px,4vw,52px)" }}>
         {sections.map((s, i) => (
-          <Reveal key={s.slug} delay={(i % 3) * 70}><SectionCard section={s} /></Reveal>
+          <Reveal key={s.slug} delay={(i % 3) * 70} variant={i % 2 ? "scale" : "rise"}><SectionCard section={s} /></Reveal>
         ))}
       </div>
     </div>

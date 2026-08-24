@@ -31,10 +31,9 @@ export default function DogsPage() {
         <Link href="/">Главная</Link><span>/</span><span aria-current="page">Собаки</span>
       </nav>
 
-      <header className="pagehero">
-        <span className="eyebrow">30 профилей · 6 разделов</span>
-        <h1 className="h1">Познакомьтесь с <span className="aurora-text">собаками</span> Хаски Лэнд</h1>
-        <p className="lead">Ищите по кличке, породе, окрасу, глазам и характеру. Добавляйте любимцев в избранное и приходите в Парк Сказка уже со своим списком.</p>
+      <header className="pagehero" data-index="Атлас стаи / 30 профилей">
+        <h1 className="h1">Тридцать характеров. <span className="aurora-text">Кто ваш?</span></h1>
+        <p className="lead">Не листайте безликий каталог. Смотрите в глаза, читайте характер и сохраняйте тех, с кем захочется встретиться в Парке Сказка.</p>
         <div className="pagehero__actions">
           <a className="btn btn--cta" href={SITE.ticketsUrl} target="_blank" rel="noopener noreferrer" data-analytics="buy-ticket">Купить билет <span className="btn__ic"><IconTicket /></span></a>
         </div>

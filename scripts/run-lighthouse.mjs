@@ -7,6 +7,10 @@ import { createGzip } from "node:zlib";
 import * as chromeLauncher from "chrome-launcher";
 import lighthouse from "lighthouse";
 
+// WSL can inherit a Windows TEMP value that Chrome Launcher mistakenly creates
+// inside the repository. Keep ephemeral browser profiles in the Linux temp dir.
+if (process.platform !== "win32") process.env.TMPDIR = "/tmp";
+
 const root = path.join(process.cwd(), "out");
 const reportDirectory = path.join(process.cwd(), "reports", "lighthouse");
 const port = 4174;
@@ -55,6 +59,7 @@ await mkdir(reportDirectory, { recursive: true });
 const chrome = await chromeLauncher.launch({
   chromePath: process.env.CHROME_PATH || undefined,
   chromeFlags: ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage"],
+  ...(process.env.CHROME_PATH ? { userDataDir: false } : {}),
 });
 
 const profiles = [
@@ -111,7 +116,9 @@ try {
       await writeFile(path.join(reportDirectory, `${profile.name}-run-${run}.html`), html, "utf8");
     }
 
-    runs.sort((a, b) => a.scores.performance - b.scores.performance);
+    // Select a stable representative run. Category scores are coarsely rounded,
+    // so sorting by them can pick an arbitrary slow run when values tie.
+    runs.sort((a, b) => a.metrics.lcpMs - b.metrics.lcpMs);
     const { scores, metrics, json, html } = runs[1];
     await writeFile(path.join(reportDirectory, `${profile.name}.json`), json, "utf8");
     await writeFile(path.join(reportDirectory, `${profile.name}.html`), html, "utf8");
