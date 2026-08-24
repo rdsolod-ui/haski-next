@@ -9,6 +9,16 @@ const contract = await readJson("tests/contracts/legacy-routes.json");
 const dogsData = await readJson("data/dogs.json");
 const sectionsData = await readJson("data/sections.json");
 const sitemap = await readFile(path.join(root, "out", "sitemap.xml"), "utf8");
+const homeHtml = await readFile(path.join(root, "out", "index.html"), "utf8");
+
+const yandexVerificationMatches = homeHtml.match(
+  /<meta[^>]+name="yandex-verification"[^>]+content="1548cae7d5e0f979"[^>]*>/g,
+) ?? [];
+if (yandexVerificationMatches.length !== 1) {
+  throw new Error(
+    `Expected exactly one Yandex verification meta tag on the homepage, found ${yandexVerificationMatches.length}.`,
+  );
+}
 
 const expectedDogPaths = contract.paths.filter((route) => route.startsWith("/dogs/"));
 const currentDogPaths = dogsData.dogs.map((dog) => `/dogs/${dog.slug || dog.id}`);
