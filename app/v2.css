@@ -280,7 +280,6 @@ a, button, summary { touch-action: manipulation; -webkit-tap-highlight-color: rg
 .searchui__chips--quick { display: none; }
 .searchui__reshead { margin: 28px 0 8px; }
 .searchui__summary { margin-top: 10px; color: var(--muted); font-size: .9rem; }
-.atlas-catalog .dogcard { content-visibility: auto; contain-intrinsic-size: 420px 640px; }
 
 /* Dog profile: 61.8 / 38.2 and full portrait. */
 .dogpage__hero { grid-template-columns: .618fr 1fr; gap: clamp(32px, 6vw, 92px); min-height: 72svh; align-items: center; }
