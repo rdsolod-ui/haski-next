@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "@/components/StaticLink";
 import JsonLd from "@/components/JsonLd";
 import { SITE } from "@/lib/constants";
-import { TOTAL_DOGS, TOTAL_SECTIONS } from "@/lib/data";
+import { TOTAL_DOGS } from "@/lib/data";
 import { IconArrow, IconHeart, IconPaw, IconSearch } from "@/components/Icons";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default function AboutPage() {
     <div className="section container info-page">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "AboutPage", name: "О Хаски Лэнд", url: `${SITE.baseUrl}/about` }} />
       <nav className="crumbs" aria-label="Хлебные крошки"><Link href="/">Главная</Link><span>/</span><span aria-current="page">О Хаски Лэнд</span></nav>
-      <header className="pagehero" data-index="Хаски Лэнд / больше, чем локация">
+      <header className="pagehero">
         <h1 className="h1">У каждого зверя — история. <span className="aurora-text">У вас — встреча.</span></h1>
         <p className="lead">Хаски Лэнд — северный мир внутри Парка Сказка. Здесь не просто смотрят на животных: запоминают имена, считывают характеры и находят любимцев.</p>
       </header>
@@ -38,7 +38,6 @@ export default function AboutPage() {
       </section>
 
       <section className="info-section info-card">
-        <p className="section-no">Северный атлас / {TOTAL_SECTIONS} миров</p>
         <h2 className="h2">Разные породы. Одна большая стая.</h2>
         <p className="lead">Сибирские хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели — выбирайте путь по породе или по характеру.</p>
         <div className="pagehero__actions">

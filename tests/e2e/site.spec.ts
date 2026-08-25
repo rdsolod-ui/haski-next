@@ -154,6 +154,34 @@ test.describe("static release contract", () => {
     expect(await media.evaluate((image) => getComputedStyle(image).objectFit)).toBe("contain");
   });
 
+  test("mobile catalog uses compact rows with usable touch targets", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/dogs");
+    const firstCard = page.locator(".atlas-catalog .dogcard").first();
+    const box = await firstCard.boundingBox();
+    expect(box?.height).toBeLessThanOrEqual(190);
+    const favorite = firstCard.locator(".favbtn");
+    const favoriteBox = await favorite.boundingBox();
+    expect(favoriteBox?.width).toBeGreaterThanOrEqual(42);
+    expect(favoriteBox?.height).toBeGreaterThanOrEqual(42);
+  });
+
+  test("dog profiles use at most five editorial chapters and personal social metadata", async ({ page }) => {
+    await page.goto("/dogs/adel");
+    await expect(page.locator(".dogchapter")).toHaveCount(5);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://haski.parkskazka.ru/media/social/dogs/adel.jpg");
+    await expect(page.locator(".section-no, [data-index]")).toHaveCount(0);
+  });
+
+  test("hero scrub does not recalculate a progress variable on its parent", async ({ page }) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    await page.evaluate(() => window.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true })));
+    await expect(page.locator('[data-hero="pack-atlas"]')).toHaveClass(/is-video-enabled/);
+    expect(await page.locator('[data-hero="pack-atlas"]').evaluate((element) =>
+      (element as HTMLElement).style.getPropertyValue("--hero-progress"),
+    )).toBe("");
+  });
+
   test("core pages have no serious automated accessibility violations", async ({ page }) => {
     for (const route of ["/", "/visit", "/dogs/adel", "/search"]) {
       await page.goto(route);

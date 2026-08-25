@@ -25,7 +25,7 @@ export default function FaqPage() {
     <div className="section container info-page">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) }} />
       <nav className="crumbs" aria-label="Хлебные крошки"><Link href="/">Главная</Link><span>/</span><span aria-current="page">Вопросы</span></nav>
-      <header className="pagehero" data-index="Перед поездкой / без сюрпризов">
+      <header className="pagehero">
         <h1 className="h1">Все ответы — до того, как <span className="aurora-text">завоет стая</span></h1>
         <p className="lead">Коротко о детях, правилах, адресе и билетах. Всё, что меняется оперативно, подтверждайте на официальном сайте Парка Сказка.</p>
       </header>

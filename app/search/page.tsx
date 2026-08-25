@@ -32,7 +32,7 @@ export default function SearchPage() {
         <Link href="/">Главная</Link><span>/</span><span aria-current="page">Поиск</span>
       </nav>
 
-      <header className="pagehero" data-index="Поиск / живая навигация">
+      <header className="pagehero">
         <h1 className="h1">Найдите того, кто <span className="aurora-text">запомнится</span></h1>
         <p className="lead">Имя, порода, окрас или черта характера — одна строка приведёт к нужному профилю. А избранное сохранит маршрут до визита.</p>
         <div className="pagehero__actions">

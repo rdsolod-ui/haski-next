@@ -31,6 +31,11 @@ for (const counterId of ["108579634", "109784590"]) {
   }
 }
 
+const lastModifiedMatches = sitemap.match(/<lastmod>2026-08-25<\/lastmod>/g) ?? [];
+if (lastModifiedMatches.length !== 43) {
+  throw new Error(`Expected a stable release lastModified on all 43 sitemap URLs, found ${lastModifiedMatches.length}.`);
+}
+
 const expectedDogPaths = contract.paths.filter((route) => route.startsWith("/dogs/"));
 const currentDogPaths = dogsData.dogs.map((dog) => `/dogs/${dog.slug || dog.id}`);
 const expectedSectionPaths = contract.paths.filter((route) => route.startsWith("/sections/"));
@@ -49,6 +54,17 @@ function assertSameSet(label, expected, actual) {
 
 assertSameSet("Dog URL", expectedDogPaths, currentDogPaths);
 assertSameSet("Section URL", expectedSectionPaths, currentSectionPaths);
+
+for (const dog of dogsData.dogs) {
+  const slug = dog.slug || dog.id;
+  await stat(path.join(root, "out", "media", "social", "dogs", `${slug}.jpg`)).catch(() => {
+    throw new Error(`Personal social image is missing for immutable dog URL: /dogs/${slug}`);
+  });
+  const profileHtml = await readFile(path.join(root, "out", "dogs", `${slug}.html`), "utf8");
+  if (!profileHtml.includes(`${contract.baseUrl}/media/social/dogs/${slug}.jpg`)) {
+    throw new Error(`Personal social image metadata is missing for /dogs/${slug}`);
+  }
+}
 
 for (const route of contract.paths) {
   const absoluteUrl = `${contract.baseUrl}${route}`;

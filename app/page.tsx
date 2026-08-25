@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
-import { allDogs, allSections, getDog, dogSlug, TOTAL_DOGS, TOTAL_SECTIONS } from "@/lib/data";
+import { allDogs, allSections, getDog, dogSlug, TOTAL_DOGS } from "@/lib/data";
 import SequenceHero from "@/components/SequenceHero";
 import Reveal from "@/components/Reveal";
 import DogCard from "@/components/DogCard";
@@ -49,7 +49,6 @@ export default function HomePage() {
       <section className="pack-index panel-v2" aria-label="Имена стаи">
         <div className="container container--wide">
           <Reveal variant="clip" className="section-title section-title--split">
-            <p className="section-no">Стая / {TOTAL_DOGS}</p>
             <h2>Не выбирайте породу.<br /><span>Выберите характер.</span></h2>
             <p>У каждого — своё имя, взгляд и способ покорить гостей. Начните с того, кто позвал первым.</p>
           </Reveal>
@@ -66,7 +65,6 @@ export default function HomePage() {
       <section className="character-atlas panel-v2 panel-v2--frost">
         <div className="container">
           <Reveal variant="soft" className="section-title">
-            <p className="section-no">Ваш маршрут / 3 шага</p>
             <h2>Знакомство начинается<br />ещё <span>до поездки</span></h2>
           </Reveal>
           <div className="path-grid">
@@ -84,7 +82,6 @@ export default function HomePage() {
       <section className="portrait-rail panel-v2">
         <div className="container container--wide">
           <Reveal variant="clip" className="section-title section-title--split">
-            <p className="section-no">Выбор гостей / портреты</p>
             <h2>Семь причин<br /><span>задержаться</span></h2>
             <p>Листайте не по породам, а по эмоции. Карточка не обрезает животное: портрет остаётся цельным на любом экране.</p>
           </Reveal>
@@ -104,7 +101,6 @@ export default function HomePage() {
       <section className="route-scene panel-v2 panel-v2--night">
         <div className="container route-scene__grid">
           <Reveal variant="left" className="route-scene__copy">
-            <p className="section-no">56.169° N / маршрут к встрече</p>
             <h2>Сначала — имя.<br />Потом — <span>настоящая встреча.</span></h2>
             <p>Добавьте любимцев в избранное. На месте откройте список и превратите прогулку по Хаски Лэнд в личную экспедицию.</p>
             <Link className="btn btn--ghost btn--lg" href="/search">Собрать свою стаю <span className="btn__ic"><IconPaw /></span></Link>
@@ -122,7 +118,6 @@ export default function HomePage() {
       <section className="section-atlas panel-v2 panel-v2--frost">
         <div className="container">
           <Reveal variant="clip" className="section-title section-title--split">
-            <p className="section-no">Северный атлас / {TOTAL_SECTIONS}</p>
             <h2>Одна стая.<br /><span>Разные миры.</span></h2>
             <p>Хаски, маламуты, самоеды, лайки, кеесхонды и другие обитатели — откройте раздел целиком.</p>
           </Reveal>
@@ -136,7 +131,6 @@ export default function HomePage() {
       <section className="faq-v2 panel-v2">
         <div className="container faq-v2__grid">
           <Reveal variant="left" className="section-title">
-            <p className="section-no">Перед поездкой / коротко</p>
             <h2>Чтобы на месте<br />остались только <span>эмоции</span></h2>
           </Reveal>
           <Reveal variant="right" className="faq-v2__list">
@@ -153,7 +147,6 @@ export default function HomePage() {
       <section className="closing-v2 panel-v2">
         <div className="container">
           <Reveal variant="scale" className="closing-v2__card">
-            <p className="section-no">Север ближе, чем кажется</p>
             <h2>Ваша стая уже ждёт.</h2>
             <p>Выберите любимцев сегодня. Познакомьтесь по-настоящему — в Парке Сказка.</p>
             <div className="closing-v2__actions">

@@ -70,7 +70,7 @@ export default function SearchClient() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Найдите по имени, породе или характеру"
+            placeholder="Найдите по имени, породе или характеру…"
             aria-label="Поиск собак"
             autoComplete="off"
           />
@@ -91,8 +91,8 @@ export default function SearchClient() {
 
       <div className="searchui__reshead">
         <div>
-          <p className="section-no">Атлас / {results.length} из {total}</p>
           <h2 className="h2">{results.length ? (results.length === total ? "Вся стая" : `Найдено: ${results.length}`) : "Следов не найдено"}</h2>
+          <p className="searchui__summary">Показано {results.length} из {total}</p>
         </div>
         {(query || section) ? <button className="btn btn--ghost" onClick={resetFilters}>Сбросить</button> : null}
       </div>

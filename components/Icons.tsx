@@ -3,6 +3,8 @@ import type { SVGProps } from "react";
 
 const base = {
   viewBox: "0 0 24 24",
+  "aria-hidden": true,
+  focusable: false,
   fill: "none",
   stroke: "currentColor",
   strokeWidth: 1.6,

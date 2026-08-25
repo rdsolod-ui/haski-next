@@ -16,7 +16,7 @@ export default function ContactsPage() {
     <div className="section container info-page">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "ContactPage", name: "Контакты Хаски Лэнд", url: `${SITE.baseUrl}/contacts` }} />
       <nav className="crumbs" aria-label="Хлебные крошки"><Link href="/">Главная</Link><span>/</span><span aria-current="page">Контакты</span></nav>
-      <header className="pagehero" data-index="Координаты встречи / Москва">
+      <header className="pagehero">
         <h1 className="h1">Север начинается <span className="aurora-text">на Крылатской</span></h1>
         <p className="lead">{SITE.address}. Сохраните маршрут — и приезжайте знакомиться с теми, кого уже выбрали в атласе.</p>
       </header>
@@ -29,7 +29,6 @@ export default function ContactsPage() {
           <a className="seccard__go" href={SITE.officialContactsUrl} target="_blank" rel="noopener noreferrer">Открыть официальный маршрут <IconArrow /></a>
         </article>
         <article className="info-card">
-          <p className="section-no">Прямая связь</p>
           <h2 className="h2">Задать вопрос</h2>
           <p className="lead"><a href={`tel:${SITE.phoneHref}`}>{SITE.phone}</a></p>
           <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
@@ -38,7 +37,6 @@ export default function ContactsPage() {
       </section>
 
       <section className="info-section finalcta">
-        <p className="section-no">Маршрут почти собран</p>
         <h2 className="h2">Пусть первая встреча начнётся сейчас</h2>
         <p>Сохраните несколько профилей — и приезжайте уже со своей маленькой стаей.</p>
         <div className="finalcta__actions">

@@ -66,7 +66,7 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
         <span aria-current="page">{section.name}</span>
       </nav>
 
-      <header className="pagehero" data-index="Раздел северного атласа">
+      <header className="pagehero">
         <h1 className="h1">{section.name}</h1>
         {section.intro ? <p className="lead">{section.intro}</p> : null}
         <p className="muted">{section.count} {plural(section.count, "профиль", "профиля", "профилей")} в разделе · {TOTAL_DOGS} всего в каталоге</p>
@@ -85,7 +85,6 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
       <section className="section" style={{ paddingBottom: 0 }}>
         <div className="section-head">
           <div className="section-head__t">
-            <p className="section-no">Другие маршруты</p>
             <h2 className="h2">Продолжить знакомство со стаей</h2>
           </div>
           <Link href="/sections" className="seccard__go">Все разделы <IconArrow /></Link>

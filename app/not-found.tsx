@@ -10,7 +10,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <div className="section container" style={{ textAlign: "center", minHeight: "60vh", display: "grid", placeContent: "center" }}>
-      <div className="pagehero" data-index="404 / стая ушла другой тропой" style={{ margin: "0 auto", justifyItems: "center" }}>
+      <div className="pagehero" style={{ margin: "0 auto", justifyItems: "center" }}>
         <h1 className="display" style={{ fontSize: "var(--fs-h1)" }}>Эта тропа <span className="aurora-text">потерялась в снегу</span></h1>
         <p className="lead" style={{ maxWidth: "48ch" }}>Страницы нет, но стая на месте. Вернитесь на главную, откройте каталог собак или спланируйте визит в Парк Сказка.</p>
         <div className="pagehero__actions" style={{ justifyContent: "center" }}>

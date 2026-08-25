@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "@/components/StaticLink";
 import { SITE } from "@/lib/constants";
-import { allSections, TOTAL_DOGS, TOTAL_SECTIONS } from "@/lib/data";
+import { allSections, TOTAL_DOGS } from "@/lib/data";
 import SectionCard from "@/components/SectionCard";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
@@ -43,7 +43,7 @@ export default function SectionsPage() {
         <Link href="/">Главная</Link><span>/</span><span aria-current="page">Разделы</span>
       </nav>
 
-      <header className="pagehero" data-index={`Северный атлас / ${TOTAL_SECTIONS} миров`}>
+      <header className="pagehero">
         <h1 className="h1">У каждой породы — <span className="aurora-text">свой север</span></h1>
         <p className="lead">От стремительных хаски до благородного оленя — {TOTAL_DOGS} живых профилей. Откройте мир целиком или сразу отправляйтесь к конкретному характеру.</p>
         <div className="pagehero__actions">

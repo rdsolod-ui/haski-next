@@ -11,8 +11,8 @@ export default function PageMotion() {
       const selectors = [
         ".reveal",
         "main .pagehero",
-        "main section:not(.haski-sequence-hero):not(.reveal):not(.panel-v2)",
-        "main article.info-card:not(.reveal)",
+        "main .panel-v2 > .container",
+        "main .info-section",
         "main .searchui .dogcard",
       ].join(",");
       const nodes = Array.from(document.querySelectorAll<HTMLElement>(selectors));
@@ -25,7 +25,7 @@ export default function PageMotion() {
       }, { threshold: .06, rootMargin: "0px 0px -6% 0px" });
       nodes.forEach((node, index) => {
         if (node.closest(".reveal") && !node.classList.contains("reveal")) return;
-        if (node.classList.contains("dogcard")) node.style.setProperty("--motion-delay", `${(index % 3) * 40}ms`);
+        if (node.classList.contains("dogcard")) node.style.setProperty("--motion-delay", `${(index % 2) * 35}ms`);
         node.classList.add("motion-ready");
         observer?.observe(node);
       });
