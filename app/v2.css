@@ -362,8 +362,11 @@ a, button, summary { touch-action: manipulation; -webkit-tap-highlight-color: rg
   .dogpage__quickitem { border-right: 0; border-bottom: 1px solid var(--line); }
 
   .atlas-catalog { display: grid; gap: 12px; }
-  .atlas-catalog .dogcard__link { grid-template-columns: 116px minmax(0, 1fr); min-height: 150px; }
-  .atlas-catalog .dogcard__media { aspect-ratio: auto; min-height: 150px; }
+  .atlas-catalog .dogcard { height: 150px; min-height: 150px; }
+  .atlas-catalog .dogcard__link { grid-template-columns: 116px minmax(0, 1fr); height: 150px; min-height: 150px; overflow: hidden; }
+  .atlas-catalog .dogcard__media,
+  .atlas-catalog .dogcard__media picture,
+  .atlas-catalog .dogcard__media img { aspect-ratio: auto; height: 150px; min-height: 0; }
   .atlas-catalog .dogcard__index { left: 8px; top: 8px; padding: 5px 6px; }
   .atlas-catalog .dogcard__open { display: none; }
   .atlas-catalog .dogcard__body { min-width: 0; gap: 7px; padding: 16px 48px 16px 16px; align-content: center; }
