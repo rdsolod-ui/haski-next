@@ -31,7 +31,7 @@ export default function DogsPage() {
         <Link href="/">Главная</Link><span>/</span><span aria-current="page">Собаки</span>
       </nav>
 
-      <header className="pagehero" data-index="Атлас стаи / 30 профилей">
+      <header className="pagehero">
         <h1 className="h1">Тридцать характеров. <span className="aurora-text">Кто ваш?</span></h1>
         <p className="lead">Не листайте безликий каталог. Смотрите в глаза, читайте характер и сохраняйте тех, с кем захочется встретиться в Парке Сказка.</p>
         <div className="pagehero__actions">

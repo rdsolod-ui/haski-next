@@ -508,7 +508,6 @@
 .haski-sequence-hero__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 4px; }
 .haski-sequence-hero__hintwrap {
   position: absolute; bottom: clamp(18px, 3vh, 34px); left: 50%; transform: translateX(-50%); z-index: 6;
-  opacity: clamp(0, calc(1.1 - var(--hero-progress) * 5), 1);
 }
 .haski-sequence-hero__hint { display: grid; justify-items: center; gap: 8px; color: rgba(255,255,255,.66); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .haski-sequence-hero__hintdot {

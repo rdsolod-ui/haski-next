@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const d = getDog(slug);
   if (!d) return {};
+  const socialImage = `/media/social/dogs/${dogSlug(d)}.jpg`;
   return {
     title: d.seo_title || `${d.name_ru} — ${d.breed_species ?? ""} в Хаски Лэнд`,
     description: d.seo_description || d.hero_text || d.card_teaser,
@@ -33,8 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: d.seo_title || d.name_ru,
       description: d.seo_description || d.hero_text,
       url: `${SITE.baseUrl}/dogs/${dogSlug(d)}`,
-      images: [{ url: `/media/portraits-v2/${dogSlug(d)}-900.webp`, width: 900, height: 1125, alt: d.image_alt || d.name_ru }],
+      images: [{ url: socialImage, width: 1200, height: 630, alt: `${d.name_ru} — профиль Хаски Лэнд` }],
     },
+    twitter: { card: "summary_large_image", title: d.seo_title || d.name_ru, description: d.seo_description || d.hero_text, images: [socialImage] },
   };
 }
 
@@ -68,9 +70,11 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
   const favItem = { slug: dogSlug(dog), name: dog.name_ru, breed: dog.breed_species || dog.family, img: localDogCover(dogSlug(dog), 480), url: `/dogs/${dogSlug(dog)}` };
 
   const subAnchors = [
-    dog.character ? { href: "#character", label: "Характер" } : null,
+    (dog.about || dog.character) ? { href: "#story", label: "Характер" } : null,
+    (params2.length || dog.appearance_text || dog.breed_block) ? { href: "#portrait", label: "Портрет" } : null,
+    (dog.visitor_scenario || dog.fun_facts?.length || dog.photo_advice) ? { href: "#highlights", label: "Главное" } : null,
+    (dog.safety_text || dog.rules?.length) ? { href: "#meeting", label: "Встреча" } : null,
     gallery.length > 1 ? { href: "#gallery", label: "Фото" } : null,
-    related.length ? { href: "#related", label: "Похожие" } : null,
   ].filter(Boolean) as { href: string; label: string }[];
 
   const ld = [
@@ -100,7 +104,6 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
       {/* HERO */}
       <div className="dogpage__hero">
         <div className="dogpage__copy">
-          <p className="section-no">{dogIsDog ? "Личный профиль / северная стая" : "Личный профиль / обитатель Хаски Лэнд"}</p>
           <h1 className="display" style={{ fontSize: "var(--fs-h1)" }}>{dog.name_ru}</h1>
 
           {chips.length ? (
@@ -139,30 +142,25 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
 
       {/* ANCHORS */}
       <nav className="dogpage__anchors glass" aria-label="Разделы профиля">
-        {dog.about ? <a href="#about">{dogIsDog ? "О собаке" : "Об обитателе"}</a> : null}
-        {(params2.length || dog.appearance_text) ? <a href="#appearance">Внешность</a> : null}
-        {dog.character ? <a href="#character">Характер</a> : null}
-        {dog.breed_block ? <a href="#breed">{dogIsDog ? "О породе" : "О виде"}</a> : null}
-        {dog.visitor_scenario ? <a href="#visitor">Кому понравится</a> : null}
-        {dog.fun_facts?.length ? <a href="#facts">Факты</a> : null}
-        {dog.photo_advice ? <a href="#photo">Для фото</a> : null}
-        {(dog.safety_text || dog.rules?.length) ? <a href="#rules">Бережно</a> : null}
+        {(dog.about || dog.character) ? <a href="#story">Характер</a> : null}
+        {(params2.length || dog.appearance_text || dog.breed_block) ? <a href="#portrait">Портрет</a> : null}
+        {(dog.visitor_scenario || dog.fun_facts?.length || dog.photo_advice) ? <a href="#highlights">Главное</a> : null}
+        {(dog.safety_text || dog.rules?.length) ? <a href="#meeting">Встреча</a> : null}
         {gallery.length > 1 ? <a href="#gallery">Фото</a> : null}
-        {related.length ? <a href="#related">Похожие</a> : null}
       </nav>
 
-      {/* BLOCKS */}
-      {dog.about ? (
-        <Reveal as="article" id="about" className="dogblock">
-          <p className="section-no">Первое знакомство</p>
-          <h2 className="h2">{dogIsDog ? `Почему ${dog.name_ru} запоминается` : `История ${dog.name_ru}`}</h2>
-          <p>{dog.about}</p>
+      {/* Пять смысловых глав вместо длинной однотипной ленты. */}
+      {(dog.about || dog.character) ? (
+        <Reveal as="article" id="story" className="dogblock dogchapter">
+          <h2 className="h2">{dogIsDog ? `Характер ${dog.name_gen || dog.name_ru}` : `История ${dog.name_gen || dog.name_ru}`}</h2>
+          {dog.about ? <p>{dog.about}</p> : null}
+          {dog.character ? <p>{dog.character}</p> : null}
+          {dog.contact_note ? <p className="dognote"><span aria-hidden>🤝</span><span>{dog.contact_note}</span></p> : null}
         </Reveal>
       ) : null}
 
-      {(params2.length || dog.appearance_text) ? (
-        <Reveal as="article" id="appearance" className="dogblock" style={{ maxWidth: "none" }}>
-          <p className="section-no">Портрет в деталях</p>
+      {(params2.length || dog.appearance_text || dog.breed_block) ? (
+        <Reveal as="article" id="portrait" className="dogblock dogchapter" style={{ maxWidth: "none" }}>
           <h2 className="h2">Взгляд, окрас, приметы</h2>
           {dog.appearance_text ? <p>{dog.appearance_text}</p> : null}
           {params2.length ? (
@@ -172,57 +170,27 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
               ))}
             </div>
           ) : null}
+          {dog.breed_block ? <p>{dog.breed_block}</p> : null}
         </Reveal>
       ) : null}
 
-      {dog.character ? (
-        <Reveal as="article" id="character" className="dogblock">
-          <p className="section-no">Живой характер</p>
-          <h2 className="h2">Как найти общий язык</h2>
-          <p>{dog.character}</p>
-          {dog.contact_note ? <p className="dognote"><span aria-hidden>🤝</span><span>{dog.contact_note}</span></p> : null}
-        </Reveal>
-      ) : null}
-
-      {dog.breed_block ? (
-        <Reveal as="article" id="breed" className="dogblock">
-          <p className="section-no">{dogIsDog ? "Порода крупным планом" : "Вид крупным планом"}</p>
-          <h2 className="h2">{dogIsDog ? "Север в генах" : "Природа характера"}</h2>
-          <p>{dog.breed_block}</p>
-        </Reveal>
-      ) : null}
-
-      {dog.visitor_scenario ? (
-        <Reveal as="article" id="visitor" className="dogblock">
-          <p className="section-no">Проверьте совпадение</p>
-          <h2 className="h2">Возможно, это ваш любимец</h2>
-          <p>{dog.visitor_scenario}</p>
-        </Reveal>
-      ) : null}
-
-      {dog.fun_facts?.length ? (
-        <Reveal as="section" id="facts" className="dogblock" style={{ maxWidth: "none" }}>
-          <p className="section-no">Факты, которые сближают</p>
+      {(dog.visitor_scenario || dog.fun_facts?.length || dog.photo_advice) ? (
+        <Reveal as="section" id="highlights" className="dogblock dogchapter" style={{ maxWidth: "none" }}>
           <h2 className="h2">Что стоит запомнить</h2>
-          <div className="dogfacts">
-            {dog.fun_facts.map((f, i) => (
-              <div key={i} className="dogfact"><span>{f.emoji || "⭐"}</span><strong>{f.text}</strong></div>
-            ))}
-          </div>
-        </Reveal>
-      ) : null}
-
-      {dog.photo_advice ? (
-        <Reveal as="article" id="photo" className="dogblock">
-          <p className="section-no">Ваш будущий кадр</p>
-          <h2 className="h2">Как поймать момент</h2>
-          <p>{dog.photo_advice}</p>
+          {dog.visitor_scenario ? <p>{dog.visitor_scenario}</p> : null}
+          {dog.fun_facts?.length ? (
+            <div className="dogfacts">
+              {dog.fun_facts.map((f, i) => (
+                <div key={i} className="dogfact"><span>{f.emoji || "⭐"}</span><strong>{f.text}</strong></div>
+              ))}
+            </div>
+          ) : null}
+          {dog.photo_advice ? <p className="dognote"><span aria-hidden>📷</span><span>{dog.photo_advice}</span></p> : null}
         </Reveal>
       ) : null}
 
       {(dog.safety_text || dog.rules?.length) ? (
-        <Reveal as="article" id="rules" className="dogblock" style={{ maxWidth: "none" }}>
-          <p className="section-no">Уважение — прежде всего</p>
+        <Reveal as="article" id="meeting" className="dogblock dogchapter" style={{ maxWidth: "none" }}>
           <h2 className="h2">Чтобы встреча понравилась всем</h2>
           {dog.safety_text ? <p>{dog.safety_text}</p> : null}
           {dog.rules?.length ? (
@@ -232,8 +200,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
       ) : null}
 
       {gallery.length > 1 ? (
-        <Reveal as="section" id="gallery" className="dogblock" style={{ maxWidth: "none" }}>
-          <p className="section-no">Портфолио</p>
+        <Reveal as="section" id="gallery" className="dogblock dogchapter" style={{ maxWidth: "none" }}>
           <h2 className="h2">Ещё несколько взглядов</h2>
           <div className="doggallerygrid">
             {gallery.map((src, i) => (
@@ -247,7 +214,6 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
         <section id="related" className="section" style={{ paddingBottom: 0 }}>
           <div className="section-head">
             <div className="section-head__t">
-              <p className="section-no">Следом по маршруту</p>
               <h2 className="h2">Кто может понравиться ещё</h2>
             </div>
             <Link href="/dogs" className="seccard__go">Весь каталог <IconArrow /></Link>
@@ -262,7 +228,6 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
       <section className="section" style={{ paddingBottom: 0 }}>
         <div className="section-head">
           <div className="section-head__t">
-            <p className="section-no">Не заканчивайте маршрут</p>
             <h2 className="h2">Следующий характер уже рядом</h2>
           </div>
         </div>
@@ -271,7 +236,7 @@ export default async function DogPage({ params }: { params: Promise<{ slug: stri
             <Link href={`/dogs/${dogSlug(nav.dog)}`} className="navhub__feat">
               <div className="navhub__photo"><DogImage slug={dogSlug(nav.dog)} alt={nav.dog.name_ru} sizes="(max-width: 760px) 92vw, 420px" /></div>
               <div className="navhub__featbody">
-                <p className="section-no">{nav.label}</p>
+                <p className="muted">{nav.label}</p>
                 <h3 className="h3">{nav.dog.name_ru}</h3>
                 <p className="muted">{nav.dog.breed_species || nav.dog.family}</p>
                 <span className="seccard__go">Открыть профиль <IconArrow /></span>

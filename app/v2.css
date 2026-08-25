@@ -54,7 +54,6 @@ body {
 .aurora-text { color: var(--brand); background: none; -webkit-text-fill-color: currentColor; }
 .eyebrow { display: none !important; }
 
-.section-no,
 .hero-coordinate {
   color: var(--brand);
   font-size: .72rem;
@@ -67,7 +66,6 @@ body {
 .panel-v2 { position: relative; padding-block: var(--section-y); overflow: clip; background: #080d12; }
 .panel-v2--frost { color: #080d12; background: #f4f7f8; }
 .panel-v2--night { background: #0c1718; }
-.panel-v2--frost .section-no { color: #287e71; }
 .panel-v2--frost .muted { color: #57625f; }
 .panel-v2--frost .section-title > p:last-child { color: #4b5754; }
 .container--wide { --container: 1440px; }
@@ -77,7 +75,7 @@ body {
 .section-title h2 span { color: var(--brand); }
 .panel-v2--frost .section-title h2 span { color: #238676; }
 .section-title > p:last-child { color: var(--muted); font-size: clamp(1.05rem, 1.3vw, 1.35rem); line-height: 1.55; max-width: 42ch; }
-.section-title--split { max-width: none; grid-template-columns: minmax(120px, .382fr) minmax(0, 1.618fr) minmax(260px, .618fr); align-items: end; }
+.section-title--split { max-width: none; grid-template-columns: minmax(0, 1.618fr) minmax(260px, .618fr); align-items: end; }
 .section-title--split > p:last-child { padding-bottom: .3em; }
 
 /* Header: atlas bar, not a floating capsule. */
@@ -105,7 +103,7 @@ body {
 
 /* Scroll-scrub hero. */
 .haski-sequence-hero { margin-top: -112px; height: 100svh; min-height: 680px; background: #080d12; }
-.haski-sequence-hero.is-scrubbed { height: 260svh; }
+.haski-sequence-hero.is-scrubbed { height: 200svh; }
 .haski-sequence-hero__sticky { position: sticky; top: 0; height: 100svh; min-height: 680px; overflow: hidden; }
 .haski-sequence-hero.is-static .haski-sequence-hero__sticky { position: relative; }
 .haski-sequence-hero__poster,
@@ -117,17 +115,15 @@ body {
 .haski-sequence-hero__overlay { z-index: 4; background: linear-gradient(90deg, rgba(8,13,18,.98) 0%, rgba(8,13,18,.7) 34%, rgba(8,13,18,.08) 68%, rgba(8,13,18,.22) 100%); }
 .haski-sequence-hero__content { z-index: 5; padding: 132px max(var(--gutter), calc((100vw - 1240px) / 2 + var(--gutter))) 58px; align-items: center; }
 .haski-sequence-hero__copyblock { display: grid; gap: clamp(18px, 2.4vw, 32px); max-width: 870px; }
-.haski-sequence-hero.is-scrubbed .haski-sequence-hero__copyblock {
-  opacity: clamp(.18, calc(1 - max(0, var(--hero-progress, 0) - .48) * 1.58), 1);
-  transform: translateY(calc(var(--hero-progress, 0) * -10%));
-}
+.haski-sequence-hero.is-scrubbed .haski-sequence-hero__copyblock,
+.haski-sequence-hero.is-scrubbed .haski-sequence-hero__chapter,
+.haski-sequence-hero.is-scrubbed .haski-sequence-hero__hintwrap { will-change: transform, opacity; }
 .haski-sequence-hero__title { max-width: 10.5ch; color: #f4f7f8; font-size: var(--fs-display); text-transform: uppercase; }
 .haski-sequence-hero__title span { color: var(--brand); }
 .haski-sequence-hero__lead { max-width: 38ch; color: rgba(244,247,248,.82); font-size: clamp(1.08rem, 1.4vw, 1.42rem); line-height: 1.55; }
 .haski-sequence-hero__actions { gap: 12px; }
-.haski-sequence-hero__chapter { position: absolute; right: var(--gutter); bottom: 48px; color: rgba(244,247,248,.74); font-size: .78rem; letter-spacing: .15em; text-transform: uppercase; opacity: clamp(0, calc((var(--hero-progress, 0) - .62) * 3.4), 1); transform: translateY(calc((1 - var(--hero-progress, 0)) * 28px)); }
+.haski-sequence-hero__chapter { position: absolute; right: var(--gutter); bottom: 48px; color: rgba(244,247,248,.74); font-size: .78rem; letter-spacing: .15em; text-transform: uppercase; opacity: 0; transform: translate3d(0, 28px, 0); }
 .haski-sequence-hero__hintwrap { left: auto; right: var(--gutter); bottom: 48%; transform: none; display: flex; align-items: center; gap: 12px; color: rgba(244,247,248,.66); font-size: .68rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
-.haski-sequence-hero.is-scrubbed .haski-sequence-hero__hintwrap { opacity: clamp(0, calc(1 - var(--hero-progress, 0) * 6), 1); }
 .haski-sequence-hero__hintline { width: 54px; height: 1px; background: rgba(244,247,248,.45); transform-origin: right; animation: atlasPulse 1.8s ease-in-out infinite; }
 @keyframes atlasPulse { 50% { transform: scaleX(.42); opacity: .48; } }
 
@@ -137,16 +133,15 @@ body {
   opacity: 0;
   transform: translateY(34px);
   transition: opacity .7s cubic-bezier(.16,1,.3,1) var(--motion-delay),
-              transform .82s cubic-bezier(.16,1,.3,1) var(--motion-delay),
-              filter .82s cubic-bezier(.16,1,.3,1) var(--motion-delay),
-              clip-path .9s cubic-bezier(.16,1,.3,1) var(--motion-delay);
+              transform .82s cubic-bezier(.16,1,.3,1) var(--motion-delay);
 }
-.motion-ready.reveal--clip { transform: translateY(58px); clip-path: inset(0 0 100% 0); }
-.motion-ready.reveal--scale { transform: translateY(24px) scale(.96); }
-.motion-ready.reveal--left { transform: translateX(-52px); }
-.motion-ready.reveal--right { transform: translateX(52px); }
-.motion-ready.reveal--soft { transform: translateY(18px); filter: blur(8px); }
-.motion-ready.motion-in { opacity: 1; transform: none; filter: none; clip-path: inset(0 0 0 0); }
+a, button, summary { touch-action: manipulation; -webkit-tap-highlight-color: rgba(94, 232, 209, .18); }
+.motion-ready.reveal--clip { transform: translateY(44px); }
+.motion-ready.reveal--scale { transform: translateY(22px) scale(.975); }
+.motion-ready.reveal--left { transform: translateX(-34px); }
+.motion-ready.reveal--right { transform: translateX(34px); }
+.motion-ready.reveal--soft { transform: translateY(18px); }
+.motion-ready.motion-in { opacity: 1; transform: none; }
 
 /* Buttons: warm CTA remains unchanged in wording and destination. */
 .btn { border-radius: 4px; min-height: 54px; padding-inline: 24px 16px; text-transform: uppercase; font-size: .78rem; letter-spacing: .08em; }
@@ -200,8 +195,9 @@ body {
 .dogcard__route { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; color: #e3e9e8; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .dogcard__route svg { width: 16px; }
 .dogcard .favbtn { top: auto; bottom: 18px; right: 18px; }
-.panel-action { margin-top: clamp(64px, 7vw, 96px); display: flex; justify-content: flex-end; }
-.text-link { display: inline-flex; align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid currentColor; color: var(--brand); font-weight: 800; }
+.portrait-rail .atlas-grid { padding-bottom: clamp(48px, 6vw, 80px); }
+.panel-action { margin-top: clamp(24px, 3vw, 42px); display: flex; justify-content: flex-end; }
+.text-link { display: inline-flex; align-items: center; min-height: 48px; gap: 12px; padding: 10px 0; border-bottom: 1px solid currentColor; color: var(--brand); font-weight: 800; }
 .text-link svg { width: 18px; }
 .panel-v2--frost .text-link { color: #176d60; }
 
@@ -253,7 +249,7 @@ body {
 .closing-v2__card::before { content: ""; position: absolute; inset: -60% 18% 20%; border: 1px solid rgba(94,232,209,.25); border-radius: 50%; box-shadow: 0 0 120px rgba(94,232,209,.12); }
 .closing-v2__card > * { position: relative; }
 .closing-v2__card h2 { font: 900 clamp(3rem, 6.5vw, 8rem)/.9 var(--font-display); letter-spacing: -.075em; }
-.closing-v2__card > p:not(.section-no) { color: #b8cbc6; font-size: clamp(1.1rem, 1.5vw, 1.4rem); }
+.closing-v2__card > p { color: #b8cbc6; font-size: clamp(1.1rem, 1.5vw, 1.4rem); }
 .closing-v2__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
 
 /* Interior pages: editorial atlas rather than card stack. */
@@ -261,7 +257,6 @@ body {
 .dogpage.section { padding-top: clamp(60px, 8vw, 112px); }
 .crumbs { color: #6f7d7b; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
 .pagehero { max-width: 1120px; gap: 24px; padding-block: clamp(28px, 4vw, 64px) clamp(44px, 6vw, 90px); border-bottom: 1px solid var(--line); }
-.pagehero::before { content: attr(data-index); color: var(--brand); font-size: .7rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
 .crumbs { color: #c7d0cf; }
 .crumbs a { color: #dfe5e4; }
 .crumbs > span { opacity: 1; }
@@ -277,12 +272,14 @@ body {
 .searchui { gap: 28px; }
 .searchui__bar { padding: 0; border-radius: 0; border: 0; border-bottom: 1px solid var(--line-2); background: transparent; box-shadow: none; }
 .searchui__barcore { border-radius: 0; background: transparent; box-shadow: none; }
+.searchui__barcore:focus-within { box-shadow: inset 0 0 0 2px var(--brand); }
 .searchui__input { font-size: clamp(1.05rem, 1.7vw, 1.45rem); }
 .searchui__chips { border-bottom: 1px solid var(--line); gap: 0; }
 .chip { padding: 14px 18px; border: 0; border-radius: 0; color: #8f9b9a; background: transparent; }
 .chip.is-active { color: var(--brand); background: transparent; box-shadow: inset 0 -2px var(--brand); }
 .searchui__chips--quick { display: none; }
 .searchui__reshead { margin: 28px 0 8px; }
+.searchui__summary { margin-top: 10px; color: var(--muted); font-size: .9rem; }
 
 /* Dog profile: 61.8 / 38.2 and full portrait. */
 .dogpage__hero { grid-template-columns: .618fr 1fr; gap: clamp(32px, 6vw, 92px); min-height: 72svh; align-items: center; }
@@ -339,6 +336,7 @@ body {
   .siteheader__cta { width: 52px; padding: 0; }
   .siteheader__cta .btn__ic { width: 40px; height: 40px; margin: 0; }
   .haski-sequence-hero { margin-top: -88px; min-height: 700px; }
+  .haski-sequence-hero.is-scrubbed { height: 165svh; }
   .haski-sequence-hero__sticky { min-height: 700px; }
   .haski-sequence-hero__poster, .haski-sequence-hero__video { object-position: 62% center; }
   .haski-sequence-hero__content { align-items: flex-end; padding: 110px var(--gutter) calc(110px + var(--safe-b)); }
@@ -362,10 +360,42 @@ body {
   .dogfacts { grid-template-columns: 1fr; }
   .dogpage__quick { grid-template-columns: 1fr; }
   .dogpage__quickitem { border-right: 0; border-bottom: 1px solid var(--line); }
+
+  .atlas-catalog { display: grid; gap: 12px; }
+  .atlas-catalog .dogcard { height: 150px; min-height: 150px; }
+  .atlas-catalog .dogcard__link { grid-template-columns: 116px minmax(0, 1fr); height: 150px; min-height: 150px; overflow: hidden; }
+  .atlas-catalog .dogcard__media,
+  .atlas-catalog .dogcard__media picture,
+  .atlas-catalog .dogcard__media img { aspect-ratio: auto; height: 150px; min-height: 0; }
+  .atlas-catalog .dogcard__index { left: 8px; top: 8px; padding: 5px 6px; }
+  .atlas-catalog .dogcard__open { display: none; }
+  .atlas-catalog .dogcard__body { min-width: 0; gap: 7px; padding: 16px 48px 16px 16px; align-content: center; }
+  .atlas-catalog .dogcard__identity { display: grid; gap: 3px; }
+  .atlas-catalog .dogcard__name { font-size: 1.42rem; }
+  .atlas-catalog .dogcard__breed { text-align: left; }
+  .atlas-catalog .dogcard__signal { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .atlas-catalog .dogcard__teaser { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: .86rem; line-height: 1.4; }
+  .atlas-catalog .dogcard__route { display: none; }
+  .atlas-catalog .dogcard .favbtn { right: 10px; bottom: 10px; width: 42px; height: 42px; }
+
+  .searchui__chips { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); padding-bottom: 4px; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .searchui__chips::-webkit-scrollbar { display: none; }
+  .searchui__chips .chip { flex: 0 0 auto; min-height: 44px; scroll-snap-align: start; }
+  .dogpage__anchors a { min-height: 44px; display: inline-flex; align-items: center; }
+  .dogpage__actions .btn, .dogpage__actions .favbtn, .pagehero__actions .btn { min-height: 48px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
-  .motion-ready { opacity: 1 !important; transform: none !important; filter: none !important; clip-path: none !important; transition: none !important; }
+  .motion-ready { opacity: 1 !important; transform: none !important; transition: none !important; }
   .haski-sequence-hero.is-scrubbed { height: 100svh; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .btn:hover, .pack-names a:hover, .dogcard:hover, .dogcard:hover .dogcard__media img,
+  .seccard:hover, .seccard:hover .seccard__media img, .navhub__feat:hover,
+  .navhub__act:hover, .chip:hover, .scrolltop:hover {
+    transform: none;
+    filter: none;
+  }
 }
